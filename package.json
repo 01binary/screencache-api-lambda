@@ -1,0 +1,32 @@
+{
+  "name": "screencache-api-lambda",
+  "version": "1.0.0",
+  "description": "ScreenCache API Serverless Express",
+  "main": "lambda.js",
+  "scripts": {
+    "start": "nodemon server",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/01binary/screencache-api-lambda.git"
+  },
+  "author": "infinesse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/01binary/screencache-api-lambda/issues"
+  },
+  "homepage": "https://github.com/01binary/screencache-api-lambda#readme",
+  "aws-region": "us-west-2",
+  "dependencies": {
+    "aws-sdk": "^2.513.0",
+    "aws-serverless-express": "^3.3.6",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "moment": "^2.24.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
