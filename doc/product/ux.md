@@ -8,13 +8,13 @@ Screen Cache mobile app follows Google's [Material Design](https://material.io) 
 
 ## Layout
 
-<img src="./phone.svg" alt="layout" width="500px">
+<img src="./layout.svg" alt="layout" width="500px">
 
 ## Colors
 
 The three main colors chosen to represent Screen Cache are **Blue**, **Magenta** and **Teal**:
 * **Blue** represents the freedom of self-expression
-* **Magenta** repre3sents creativity and imagination
+* **Magenta** represents creativity and imagination
 * **Teal** represents open communication and clarity of thought
 
 The following colors are harmonized and adjusted to meet WCAG 2.0 AAA accessibility requirements:
