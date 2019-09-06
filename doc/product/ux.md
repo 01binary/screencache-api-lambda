@@ -8,7 +8,7 @@ Screen Cache mobile app follows Google's [Material Design](https://material.io) 
 
 ## Layout
 
-<img src="./layout.svg" alt="layout" width="500px">
+<img src="./images/layout.svg" alt="layout" width="500px">
 
 ## Colors
 
@@ -21,20 +21,20 @@ The following colors are harmonized and adjusted to meet WCAG 2.0 AAA accessibil
 
 &nbsp;
 
-<img src="./colors.svg" alt="color theory" width="200px">
+<img src="./images/colors.svg" alt="color theory" width="200px">
 
 &nbsp;
 
 |Color|Name|Hex|
 |-|-|-|
-|![Blue](./blue.svg)|Primary|#2A3694|
-|![Magenta](./magenta.svg)|Secondary|#862574|
-|![Teal](./teal.svg)|Alternate|#219386|
-|![Background](./background.svg)|Background|#303030|
-|![Header](./header.svg)|Header|#212121|
-|![Foreground](./foreground.svg)|Foreground|#FFFFFF|
-|![Danger](./danger.svg)|Danger|#A32361|
-|![Highlight](./highlight.svg)|Highlight|#9DBFE5|
+|![Blue](./images/blue.svg)|Primary|#2A3694|
+|![Magenta](./images/magenta.svg)|Secondary|#862574|
+|![Teal](./images/teal.svg)|Alternate|#219386|
+|![Background](./images/background.svg)|Background|#303030|
+|![Header](./images/header.svg)|Header|#212121|
+|![Foreground](./images/foreground.svg)|Foreground|#FFFFFF|
+|![Danger](./images/danger.svg)|Danger|#A32361|
+|![Highlight](./images/highlight.svg)|Highlight|#9DBFE5|
 
 ## Compositions
 

@@ -4,6 +4,8 @@
 
 The services used in Screen Cache technology stack ensure maximum possible scalability and availability:
 
+<img src="./images/architecture.png" alt="architecture">
+
 |Stack|Service|Scalability|Availability|Pricing|
 |-|-|-|-|-|
 |Database|DynamoDB|Provisioned or on-demand by region or global (unlimited)|[99.99%](https://aws.amazon.com/dynamodb/sla/)|[DynamoDB pricing](https://aws.amazon.com/dynamodb/pricing/)|
