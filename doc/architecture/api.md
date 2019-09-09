@@ -134,6 +134,12 @@ Accept: application/json
 |-|-|
 |userId|The user Id to retrieve the details for|
 
+**request body**
+
+```
+No request body
+```
+
 **200: success**
 
 ```
@@ -415,6 +421,12 @@ Accept: application/json
 |page|The 1-based page index when paginating (defaults to 1)|
 |limit|How many items to return per page (defaults to 50)
 
+**request body**
+
+```
+No request body
+```
+
 **200: success**
 
 ```
@@ -685,6 +697,12 @@ Accept: application/json
 |page|The 1-based page index when paginating (defaults to 1)|
 |limit|How many items to return per page (defaults to 50)
 
+**request body**
+
+```
+No request body
+```
+
 **200: success**
 
 ```
@@ -813,7 +831,7 @@ Authorization: Bearer {ACCESS_TOKEN}
     "image_url": "xxx"
     "text": "email@domain.com"
 }
-````
+```
 
 **201: created**
 
@@ -1401,11 +1419,6 @@ No request body
 **204: no content**
 
 ```
-Cache-Control: no-store
-Pragma: no-cache
-```
-
-```
 No response body
 ```
 
@@ -1459,7 +1472,7 @@ CSRF-Token: xxx
     "username": "email@domain.com",
     "password": "secret"
 }
-````
+```
 
 **200: success** [Access Token Response](https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/)
 
@@ -1600,8 +1613,7 @@ CSRF-Token: xxx
 **204: no content**
 
 ```
-Cache-Control: no-store
-Pragma: no-cache
+No response body
 ```
 
 **400: invalid request**
@@ -1765,8 +1777,7 @@ CSRF-Token: xxx
 **204: no content**
 
 ```
-Cache-Control: no-store
-Pragma: no-cache
+No response body
 ```
 
 **400: invalid request**
