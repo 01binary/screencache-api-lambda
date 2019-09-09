@@ -223,6 +223,12 @@ Authorization: Bearer {ACCESS_TOKEN}
 Accept: application/json
 ```
 
+**request path**
+
+|Parameter|Description|
+|-|-|
+|userId|The user to upload the image for, must be the current user|
+
 **request body:** *multi-part form data*
 
 ```
@@ -395,6 +401,12 @@ Authorization: Bearer {ACCESS_TOKEN}
 Accept: application/json
 ```
 
+**request path**
+
+|Parameter|Description|
+|-|-|
+|userId|The user to list friends for|
+
 **request query string**
 
 |Parameter|Description|
@@ -507,6 +519,12 @@ Authorization: Bearer {ACCESS_TOKEN}
 Accept: application/json
 ```
 
+**request path**
+
+|Parameter|Description|
+|-|-|
+|userId|The user to add a friend for, must be the current user|
+
 **request body**
 
 ```
@@ -575,6 +593,13 @@ Remove a friend.
 ```
 Authorization: Bearer {ACCESS_TOKEN}
 ```
+
+**request path**
+
+|Parameter|Description|
+|-|-|
+|userId|The user to remove a friend for, must be the current user|
+|friendId|The friend user Id to remove|
 
 **request body**
 
@@ -645,6 +670,12 @@ List user posts.
 Authorization: Bearer {ACCESS_TOKEN}
 Accept: application/json
 ```
+
+**request path**
+
+|Parameter|Description|
+|-|-|
+|userId|The user to list posts for|
 
 **request query string**
 
@@ -769,6 +800,12 @@ Accept: application/json
 Authorization: Bearer {ACCESS_TOKEN}
 ```
 
+**request path**
+
+|Parameter|Description|
+|-|-|
+|userId|The user to create a new post for, must be the current user|
+
 **request body**
 
 ```
@@ -876,6 +913,13 @@ Authorization: Bearer {ACCESS_TOKEN}
 Accept: application/json
 ```
 
+**request path**
+
+|Parameter|Description|
+|-|-|
+|userId|The user to retrieve the post for|
+|postId|The post to retrieve|
+
 **request body**
 
 ```
@@ -968,6 +1012,13 @@ Content-Type: application/json
 Authorization: Bearer {ACCESS_TOKEN}
 Accept: application/json
 ```
+
+**request path**
+
+|Parameter|Description|
+|-|-|
+|userId|The user to update the post for, must be the current user|
+|postId|The post Id to update|
 
 **request body**
 
@@ -1067,6 +1118,13 @@ Delete a user post.
 ```
 Authorization: Bearer {ACCESS_TOKEN}
 ```
+
+**request path**
+
+|Parameter|Description|
+|-|-|
+|userId|The user to delete the post for, must be the current user|
+|postId|The post Id to delete|
 
 **request body**
 
