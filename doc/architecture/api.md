@@ -22,7 +22,7 @@ Accept: application/json
 |Parameter|Description|
 |-|-|
 |q|User name query, returns users containing this keyword in their name when specified (not empty or whitespace)|
-|page|The 1-based page index when paginating (max 100, default 1)|
+|page|The 1-based page index when paginating (default 1)|
 |limit|How many items to return per page (max 100, default 50)|
 
 **200: success**
@@ -418,7 +418,7 @@ Accept: application/json
 |Parameter|Description|
 |-|-|
 |q|Friend name query, returns friends containing this keyword in their name when specified (not empty or whitespace)
-|page|The 1-based page index when paginating (max 100, default 1)|
+|page|The 1-based page index when paginating (default 1)|
 |limit|How many items to return per page (max 100, default 50)|
 
 **request body**
@@ -694,7 +694,7 @@ Accept: application/json
 |Parameter|Description|
 |-|-|
 |q|Search criteria for filtering posts including logical search operators that join search keywords
-|page|The 1-based page index when paginating (max 100, default 1)|
+|page|The 1-based page index when paginating (default 1)|
 |limit|How many items to return per page (max 100, default 50)|
 
 **request body**
