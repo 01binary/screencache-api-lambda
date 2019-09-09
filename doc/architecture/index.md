@@ -2,14 +2,14 @@
 
 ## Infrastructure Overview
 
-The services used in Screen Cache technology stack ensure maximum possible scalability and availability:
+The services used in Screen Cache technology stack ensure maximum scalability and availability of `99.9%`:
 
 <img src="./images/architecture.png" alt="architecture">
 
 |Stack|Service|Scalability|Availability|Pricing|
 |-|-|-|-|-|
 |Database|DynamoDB|Provisioned or on-demand by region or global (unlimited)|[99.99%](https://aws.amazon.com/dynamodb/sla/)|[DynamoDB pricing](https://aws.amazon.com/dynamodb/pricing/)|
-|Full-Text Search|Elasticsearch|EC2 cluster by instance size|[99.9%](https://aws.amazon.com/elasticsearch-service/sla/)|[Elasticsearch pricing](https://aws.amazon.com/elasticsearch-service/pricing/)
+|Full-Text Search|Elasticsearch|EC2 cluster by instance size with attached EBS storage|[99.9%](https://aws.amazon.com/elasticsearch-service/sla/)|[Elasticsearch pricing](https://aws.amazon.com/elasticsearch-service/pricing/)
 |File Storage|S3|Standard or Infrequent Storage (unlimited)|[99.9%](https://aws.amazon.com/s3/sla/)|[S3 pricing](https://aws.amazon.com/s3/pricing/)|
 |API|Lambda|Millions of requests|[99.99%](https://aws.amazon.com/lambda/sla/)|[Lambda pricing](https://aws.amazon.com/lambda/pricing/)|
 |API|API Gateway|Millions of requests|[99.99%](https://aws.amazon.com/api-gateway/sla/)|[API Gateway pricing](https://aws.amazon.com/cognito/pricing/)|
@@ -17,7 +17,13 @@ The services used in Screen Cache technology stack ensure maximum possible scala
 
 ### Operating Cost
 
-The minimum price for running Screen Cache infrastructure in Oregon is `$29.78/mo` (`$3.5/mo` for `API Gateway` required to run the backend and `$29.78` for `Elasticsearch` used to support full text search). Charges will appear only for API Gateway and Elasticsearch if the other services stay within [free tier limits](https://aws.amazon.com/free/):
+The minimum cost of maintaining Screen Cache infrastructure in Oregon (`us-west-2`) is `$30.78/mo`:
+
+* `$3.5/mo` for `API Gateway` required to run the serverless API
+* `$26.28/mo` for a single `t2.small.elasticsearch` instance
+* `$1/mo` for `10 GB` of EBS attached to the elasticsearch instance.
+
+Charges will appear only for API Gateway and Elasticsearch if the other services stay within [free tier limits](https://aws.amazon.com/free/):
 
 |Service|Free Tier Limits (monthly)|
 |-|-|
@@ -28,4 +34,4 @@ The minimum price for running Screen Cache infrastructure in Oregon is `$29.78/m
 |API Gateway|1M requests|
 |Cognito|50K user logins|
 
-For both API Gateway and Elasticsearch, billing begins 12 months after AWS account creation.
+For both API Gateway and Elasticsearch, billing begins 12 months after AWS account creation. Until then, the cost of running Screen Cache on a brand new AWS account is `$0` which is useful for testing and evaluation.

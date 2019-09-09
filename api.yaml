@@ -1,0 +1,22 @@
+openapi: "3.0.0"
+info:
+  title: Screen Cache API
+  description: Screen Cache Serverless API
+  version: 1.0.0
+  license: MIT
+servers:
+  - url: www.screencache.io/api
+paths:
+  /api:
+    /users:
+      get:
+        summary: Lists all users
+        operationId: listUsers
+        parameters:
+          - name: limit
+            in: query
+            description: How many items to return at one time (max 100)
+            required: false
+            schema:
+              type: integer
+              format: int32
