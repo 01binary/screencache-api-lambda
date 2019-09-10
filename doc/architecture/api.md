@@ -1853,6 +1853,68 @@ Pragma: no-cache
 }
 ```
 
+### POST /account/validate
+
+**request headers**
+
+```
+Content-Type: application/json
+Accept: application/json
+CSRF-Token: xxx
+```
+
+**request body**
+
+```
+{
+    "username": "xxx",
+    "nickname": "xxx"
+}
+```
+
+**200: success**
+
+```
+Content-Type: application/json
+```
+
+```
+{
+    "username_valid": true,
+    "nickname_valid": false
+}
+```
+
+**400: invalid request**
+
+```
+Content-Type: application/json
+Cache-Control: no-store
+Pragma: no-cache
+```
+
+```
+{
+    "error": "invalid_request",
+    "error_description": "The header 'CSRF-Token' is missing or invalid"
+}
+```
+
+**500: server error**
+
+```
+Content-Type: application/json
+Cache-Control: no-store
+Pragma: no-cache
+```
+
+```
+{
+    "error": "server_error",
+    "error_description": "The server was unable to process this request"
+}
+```
+
 ### PUT /account
 
 **request headers**
