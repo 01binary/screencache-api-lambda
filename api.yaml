@@ -44,205 +44,308 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: "#/components/schemas/UserListResponse"
-  components:
-    schemas:
-      PostUpdateRequest:
-        
-      PostDetailsResponse:
-        type: object
-        required:
-        - id
-        - time_stamp
-        - image_url
-        - text
-        properties:
-          id:
-            type: integer
-            format: int32
-            description: The unique post Id across all users
-          time_stamp:
-            type: integer
-            format: int32
-            description: The unix epoch date/time stamp of when the post was created on the server
-          image_url:
-            type: string
-            description: The post image URL
-          text:
-            type: string
-            description: The text that annotates the post image
-      AddPostRequest:
-        type: object
-        required:
-        - image_url
-        properties:
-          image_url:
-            type: string
-            description: The URL of the post image on S3
-          text:
-            type: string
-            description: The text that annotates the post
-      AddPostResponse:
-        type: object
-        required:
-        - id
-        - time_stamp
-        properties:
-          id:
-            type: integer
-            format: int32
-            description: The Id of the created post
-          time_stamp:
-            type: integer
-            format: int32
-            description: The Unix epoch date/time stamp of when the post was created on the server
-      AddFriendRequest:
-        type: object
-        required:
-        - id
-        properties:
-          id:
-            type: integer
-            format: int32
-      ImageUploadResponse:
-        type: object
-        required:
-        - image_id
-        - image_url
-        properties:
-          image_id:
-            type: string
-            description: The unique Id assigned to the image after upload
-          image_url:
-            type: string
-            description: The URL of the uploaded image on S3
-      ImageUploadRequest:
-        type: object
-        required:
-        - image
-        properties:
-          image:
+                  $ref: "#/components/schemas/UsersResponse"
+components:
+  schemas:
+    UpdateAccountRequest:
+      type: object
+      required:
+      - nickname
+      - avatar_url
+      properties:
+        nickname:
+          type: string
+          description: The unique nickname to update
+        avatar_url:
+          type: string
+          description: The avatar URL to set
+        bio:
+          type: string
+          description: The bio blurb to set
+    ChangePasswordRequest:
+      type: object
+      required:
+      - password
+      properties:
+        password:
+          type: string
+          description: The new password to set
+    ResetPasswordRequest:
+      type: object
+      required:
+      - password_reset_token
+      - new_password
+      properties:
+        password_reset_token:
+          type: string
+          description: The password reset token sent in recovery email
+        new_password:
+          type: string
+          description: The new password to set
+    RecoverPasswordRequest:
+      type: object
+      required:
+      - username
+      properties:
+        username:
+          type: string
+          description: The username for which to recover password
+    SignupRequest:
+      type: object
+      required:
+      - nickname
+      - username
+      - password
+      properties:
+        nickname:
+          type: string
+          description: The new user's unique nickname
+        username:
+          type: string
+          description: The new user's unique email
+        password:
+          type: string
+          description: The new user's password that meets password strength requirements
+    AuthorizedResponse:
+      type: object
+      required:
+      - access_token
+      - token_type
+      - expires_in
+      properties:
+        access_token:
+          type: string
+          description: The Bearer token that can be passed to requests that require authentication
+        token_type:
+          type: string
+          description: The token type identifying the token as a Bearer token
+        expires_in:
+          type: int
+          format: int32
+          description: The number of seconds until this token expires
+    GetAccountResponse:
+      type: object
+      required:
+      - csrf_token
+      properties:
+        user:
+          type: object
+          required:
+          - id
+          - nickname
+          - username
+          properties:
+            id:
+              type: string
+              description: The logged in user Id
+            nickname:
+              type: string
+              description: The logged in user's nickname
+            username:
+              type: string
+              description: The logged in user's username (which is also the email)
+    PostUpdateRequest:
+      type: object
+      required:
+      - text
+      properties:
+        text:
+          type: string
+          description: The post text content
+    PostDetailsResponse:
+      type: object
+      required:
+      - id
+      - time_stamp
+      - image_url
+      - text
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: The unique post Id across all users
+        time_stamp:
+          type: integer
+          format: int32
+          description: The unix epoch date/time stamp of when the post was created on the server
+        image_url:
+          type: string
+          description: The post image URL
+        text:
+          type: string
+          description: The text that annotates the post image
+    AddPostRequest:
+      type: object
+      required:
+      - image_url
+      properties:
+        image_url:
+          type: string
+          description: The URL of the post image on S3
+        text:
+          type: string
+          description: The text that annotates the post
+    AddPostResponse:
+      type: object
+      required:
+      - id
+      - time_stamp
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: The Id of the created post
+        time_stamp:
+          type: integer
+          format: int32
+          description: The Unix epoch date/time stamp of when the post was created on the server
+    AddFriendRequest:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: integer
+          format: int32
+    ImageUploadResponse:
+      type: object
+      required:
+      - image_id
+      - image_url
+      properties:
+        image_id:
+          type: string
+          description: The unique Id assigned to the image after upload
+        image_url:
+          type: string
+          description: The URL of the uploaded image on S3
+    ImageUploadRequest:
+      type: object
+      required:
+      - image
+      properties:
+        image:
+          type: object
+          required:
+          - uri
+          - name
+          - type
+          properties:
+            uri:
+              type: string
+              description: The image URI on the local device
+            name:
+              type: string
+              description: The name the mobile client is assigning to the image
+            type:
+              type: string
+              description: The image MIME type
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - error_description
+      properties:
+        error:
+          type: string
+          description: The error code
+        error_description:
+          type: string
+          description: The error description
+    UserDetailsResponse:
+      type: object
+      required:
+      - id
+      - nickname
+      - avatar_url
+      - bio
+      properties:
+        id:
+          type: integer
+          description: The user id
+        nickname:
+          type: string
+          description: The user nickname
+        avatar_url:
+          type: string
+          description: The avatar image URL on S3
+        bio:
+          type: string
+          description: The user bio blurb
+    PostsResponse:
+      type: object
+      required:
+      - page
+      - limit
+      - pages
+      - order
+      - posts
+      properties:
+        page:
+          type: integer
+          description: The requested page number
+        limit:
+          type: integer
+          description: The max items returned per page
+        pages:
+          type: integer
+          description: The total pages available
+        posts:
+          type: object
+          additionalProperties:
             type: object
             required:
-            - uri
-            - name
-            - type
+            - id
+            - time_stamp
+            - image_url
+            - text
             properties:
-              uri:
+              id:
                 type: string
-                description: The image URI on the local device
-              name:
+                description: The post Id
+              time_stamp:
+                type: integer
+                format: int32
+                description: The Unix epoch data/time stamp
+              image_url:
                 type: string
-                description: The name the mobile client is assigning to the image
-              type:
+                description: The image associated with the post
+              text:
                 type: string
-                description: The image MIME type
-      ErrorResponse:
-        type: object
-        required:
-        - error
-        - error_description
-        properties:
-          error:
-            type: string
-            description: The error code
-          error_description:
-            type: string
-            description: The error description
-      UserDetailsResponse:
-        type: object
-        required:
-        - id
-        - nickname
-        - avatar_url
-        - bio
-        properties:
-          id:
-            type: integer
-            description: The user id
-          nickname:
-            type: string
-            description: The user nickname
-          avatar_url:
-            type: string
-            description: The avatar image URL on S3
-          bio:
-            type: string
-            description: The user bio blurb
-      PostsResponse:
-        type: object
-        required:
-        - page
-        - limit
-        - pages
-        - order
-        - posts
-        properties:
-          page:
-            type: integer
-            description: The requested page number
-          limit:
-            type: integer
-            description: The max items returned per page
-          pages:
-            type: integer
-            description: The total pages available
-          posts:
+                description: The text that annotates the post image
+    UsersResponse:
+      type: object
+      required:
+      - page
+      - limit
+      - pages
+      - users
+      properties:
+        page:
+          type: integer
+          description: The requested page number
+        limit:
+          type: integer
+          description: The max items returned per page
+        pages:
+          type: integer
+          description: The total pages available
+        users:
+          type: object
+          additionalProperties:
             type: object
-            additionalProperties:
-              type: object
-              required:
-              - id
-              - time_stamp
-              - image_url
-              - text
-              properties:
-                id:
-                  type: string
-                  description: The post Id
-                time_stamp:
-                  type: integer
-                  format: int32
-                  description: The Unix epoch data/time stamp
-                image_url:
-                  type: string
-                  description: The image associated with the post
-                text:
-                  type: string
-                  description: The text that annotates the post image
-      UsersResponse:
-        type: object
-        required:
-        - page
-        - limit
-        - pages
-        - users
-        properties:
-          page:
-            type: integer
-            description: The requested page number
-          limit:
-            type: integer
-            description: The max items returned per page
-          pages:
-            type: integer
-            description: The total pages available
-          users:
-            type: object
-            additionalProperties:
-              type: object
-              required:
-              - id
-              - nickname
-              - avatar_rl
-              properties:
-                id:
-                  type: integer
-                  description: The user Id
-                nickname:
-                  type: string
-                  description: The user nickname
-                avatar_url:
-                  type: string
-                  description: The user avatar URL from S3
+            required:
+            - id
+            - nickname
+            - avatar_rl
+            properties:
+              id:
+                type: integer
+                description: The user Id
+              nickname:
+                type: string
+                description: The user nickname
+              avatar_url:
+                type: string
+                description: The user avatar URL from S3
 
