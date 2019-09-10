@@ -1690,7 +1690,8 @@ CSRF-Token: xxx
 
 ```
 {
-    "password_reset_token": "xxx"
+    "password_reset_token": "xxx",
+    "new_password": "xxx"
 }
 ```
 
@@ -1736,6 +1737,20 @@ Pragma: no-cache
 {
     "error": "invalid_request",
     "error_description": "This token has expired"
+}
+```
+
+```
+{
+    "error": "invalid_request",
+    "error_description": "The field 'password' is required"
+}
+```
+
+```
+{
+    "error": "invalid_request",
+    "error_description": "This password does not meet password strength requirements"
 }
 ```
 
