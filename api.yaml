@@ -40,6 +40,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UsersResponse"
+              example:
+                page: 1
+                limit: 50
+                pages: 5
+                users:
+                  123:
+                    id: 123
+                    nickname: "user1"
+                    avatar_url: "xxx"
+                  456:
+                    id: 456
+                    nickname: "user2"
+                    avatar_url: "xxx"
         '401':
           description: Unauthorized
           content:
@@ -77,9 +90,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-            example:
-              error: "server_error"
-              error_description: "The server was unable to process this request"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
 components:
   securitySchemes:
     bearerAuth:
@@ -388,12 +401,3 @@ components:
               avatar_url:
                 type: string
                 description: The user avatar URL from S3
-      example:
-        page: 1
-        limit: 50
-        pages: 10
-        users:
-          123:
-            id: 123
-            nickname: "user1"
-            avatar_url: "https://screencache/images/323.jpg"
