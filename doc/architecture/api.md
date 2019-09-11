@@ -102,6 +102,13 @@ Pragma: no-cache
 }
 ```
 
+```
+{
+    "error": "invalid_request",
+    "error_description": "The query parameter 'limit' must be a number less than or equal to 100"
+}
+```
+
 **500: server error**
 
 ```
@@ -504,6 +511,13 @@ Pragma: no-cache
 }
 ```
 
+```
+{
+    "error": "invalid_request",
+    "error_description": "The query parameter 'limit' must be a number less than or equal to 100"
+}
+```
+
 **500: server error**
 
 ```
@@ -788,6 +802,13 @@ Pragma: no-cache
 {
     "error": "invalid_request",
     "error_description": "The query parameter 'limit' must be a number greater than 0"
+}
+```
+
+```
+{
+    "error": "invalid_request",
+    "error_description": "The query parameter 'limit' must be a number less than or equal to 100"
 }
 ```
 
@@ -1854,6 +1875,8 @@ Pragma: no-cache
 ```
 
 ### POST /account/validate
+
+Validate username and/or nickname (used for AJAX form validation).
 
 **request headers**
 
