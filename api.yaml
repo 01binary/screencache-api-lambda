@@ -3,55 +3,95 @@ info:
   title: Screen Cache API
   description: Screen Cache Serverless API
   version: 1.0.0
-  license: MIT
 servers:
-  - url: www.screencache.io/api
+  - url: https://www.screencache.io/api/v1
 paths:
-  /api:
-    /users:
-      get:
-        summary: Lists all users
-        operationId: listUsers
-        parameters:
-          - name: Authorization
-            in: header
-            required: true
-          - name: Accept
-            in: header
-          - name: q
-            in: query
-            description: User name query, returns users containing this keyword in their name when specified (not empty or whitespace)
-            required: false
-            schema:
-              type: string
-          - name: page
-            in: query
-            description: The 1-based page index when paginating (max 100, default 1)
-            required: false
-            schema:
-              type: integer
-              format: int32
-          - name: limit
-            in: query
-            description: How many items to return at one time (max 100, default 50)
-            required: false
-            schema:
-              type: integer
-              format: int32
-        responses:
-          '200':
-            description: A paged dictionary of users
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/UsersResponse"
+  /users:
+    get:
+      summary: Lists all users
+      operationId: listUsers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          description: User name query, returns users containing this keyword in their name when specified (not empty or whitespace)
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: The 1-based page index when paginating (max 100, default 1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100, default 50)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: A paged dictionary of users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsersResponse"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                Parameter q is too long:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'q' is too long"
+                Parameter q contains invalid characters:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'q' contains invalid characters"
+                Parameter page must be a number greater than 0:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'page' must be a number greater than 0"
+                Parameter limit must be greater than 0:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'limit' must be a number greater than 0"
+                Parameter limit must be max 100:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'limit' must be a number less than or equal to 100"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            example:
+              error: "server_error"
+              error_description: "The server was unable to process this request"
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     UpdateAccountRequest:
       type: object
       required:
-      - nickname
-      - avatar_url
+        - nickname
+        - avatar_url
       properties:
         nickname:
           type: string
@@ -65,7 +105,7 @@ components:
     ChangePasswordRequest:
       type: object
       required:
-      - password
+        - password
       properties:
         password:
           type: string
@@ -73,8 +113,8 @@ components:
     ResetPasswordRequest:
       type: object
       required:
-      - password_reset_token
-      - new_password
+        - password_reset_token
+        - new_password
       properties:
         password_reset_token:
           type: string
@@ -85,7 +125,7 @@ components:
     RecoverPasswordRequest:
       type: object
       required:
-      - username
+        - username
       properties:
         username:
           type: string
@@ -93,9 +133,9 @@ components:
     SignupRequest:
       type: object
       required:
-      - nickname
-      - username
-      - password
+        - nickname
+        - username
+        - password
       properties:
         nickname:
           type: string
@@ -109,9 +149,9 @@ components:
     AuthorizedResponse:
       type: object
       required:
-      - access_token
-      - token_type
-      - expires_in
+        - access_token
+        - token_type
+        - expires_in
       properties:
         access_token:
           type: string
@@ -120,20 +160,20 @@ components:
           type: string
           description: The token type identifying the token as a Bearer token
         expires_in:
-          type: int
+          type: integer
           format: int32
           description: The number of seconds until this token expires
     GetAccountResponse:
       type: object
       required:
-      - csrf_token
+        - csrf_token
       properties:
         user:
           type: object
           required:
-          - id
-          - nickname
-          - username
+            - id
+            - nickname
+            - username
           properties:
             id:
               type: string
@@ -147,7 +187,7 @@ components:
     PostUpdateRequest:
       type: object
       required:
-      - text
+        - text
       properties:
         text:
           type: string
@@ -155,10 +195,10 @@ components:
     PostDetailsResponse:
       type: object
       required:
-      - id
-      - time_stamp
-      - image_url
-      - text
+        - id
+        - time_stamp
+        - image_url
+        - text
       properties:
         id:
           type: integer
@@ -177,7 +217,7 @@ components:
     AddPostRequest:
       type: object
       required:
-      - image_url
+        - image_url
       properties:
         image_url:
           type: string
@@ -188,8 +228,8 @@ components:
     AddPostResponse:
       type: object
       required:
-      - id
-      - time_stamp
+        - id
+        - time_stamp
       properties:
         id:
           type: integer
@@ -202,7 +242,7 @@ components:
     AddFriendRequest:
       type: object
       required:
-      - id
+        - id
       properties:
         id:
           type: integer
@@ -210,8 +250,8 @@ components:
     ImageUploadResponse:
       type: object
       required:
-      - image_id
-      - image_url
+        - image_id
+        - image_url
       properties:
         image_id:
           type: string
@@ -222,14 +262,14 @@ components:
     ImageUploadRequest:
       type: object
       required:
-      - image
+        - image
       properties:
         image:
           type: object
           required:
-          - uri
-          - name
-          - type
+            - uri
+            - name
+            - type
           properties:
             uri:
               type: string
@@ -243,8 +283,8 @@ components:
     ErrorResponse:
       type: object
       required:
-      - error
-      - error_description
+        - error
+        - error_description
       properties:
         error:
           type: string
@@ -255,10 +295,10 @@ components:
     UserDetailsResponse:
       type: object
       required:
-      - id
-      - nickname
-      - avatar_url
-      - bio
+        - id
+        - nickname
+        - avatar_url
+        - bio
       properties:
         id:
           type: integer
@@ -275,11 +315,11 @@ components:
     PostsResponse:
       type: object
       required:
-      - page
-      - limit
-      - pages
-      - order
-      - posts
+        - page
+        - limit
+        - pages
+        - order
+        - posts
       properties:
         page:
           type: integer
@@ -295,10 +335,10 @@ components:
           additionalProperties:
             type: object
             required:
-            - id
-            - time_stamp
-            - image_url
-            - text
+              - id
+              - time_stamp
+              - image_url
+              - text
             properties:
               id:
                 type: string
@@ -316,10 +356,10 @@ components:
     UsersResponse:
       type: object
       required:
-      - page
-      - limit
-      - pages
-      - users
+        - page
+        - limit
+        - pages
+        - users
       properties:
         page:
           type: integer
@@ -335,9 +375,9 @@ components:
           additionalProperties:
             type: object
             required:
-            - id
-            - nickname
-            - avatar_rl
+              - id
+              - nickname
+              - avatar_rl
             properties:
               id:
                 type: integer
@@ -348,4 +388,12 @@ components:
               avatar_url:
                 type: string
                 description: The user avatar URL from S3
-
+      example:
+        page: 1
+        limit: 50
+        pages: 10
+        users:
+          123:
+            id: 123
+            nickname: "user1"
+            avatar_url: "https://screencache/images/323.jpg"
