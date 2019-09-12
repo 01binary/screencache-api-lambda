@@ -7,6 +7,56 @@ servers:
   - url: https://www.screencache.io/api/v1
 paths:
   /users/{userId}/friends:
+    post:
+      summary: Add a friend.
+      operationId: addFriend
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to list friends for
+          schema:
+            type: string
+      requestBody:
+        description: Specify a user to add as a friend
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddFriendRequest"
+            example:
+              id: 123
+      responses:
+        '204':
+          description: Friend request sent
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: 'invalid_request'
+                error_description: 'Cannot add a friend because a user with this id does not exist'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
     get:
       summary: List user friends.
       operationId: listFriends
