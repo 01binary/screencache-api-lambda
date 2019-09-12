@@ -6,6 +6,145 @@ info:
 servers:
   - url: https://www.screencache.io/api/v1
 paths:
+  /users/{userId}/images:
+    post:
+      summary: Upload an image.
+      operationId: uploadImage
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to upload the image for, must be the current user
+          schema:
+            type: string
+      requestBody:
+        description: xxx
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageUploadRequest'
+            example:
+              image:
+                type: object
+                properties:
+                  uri:
+                    type: string
+                    description: The image URI on the local device
+                  name:
+                    type: string
+                    description: The unique image name for the current user
+                  type:
+                    type: string
+                    description: The image MIME type
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageUploadResponse'
+              example:
+                image_id:
+                  type: string
+                  description: The Id of the uploaded image
+                image_url:
+                  type: string
+                  description: The URL of the uploaded image on S3
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                Image missing or invalid:
+                  error: "invalid_request"
+                  error_description: "The field 'image' is missing or invalid"
+                Image too large:
+                  error: "invalid_request"
+                  error_description: "This image was too large to upload, maximum size is 2 MB"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
+  /users/{userId}:
+    get:
+      summary: Retrieve user details.
+      operationId: getUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to retrieve details for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetailsResponse'
+              example:
+                id: 123
+                nickname: "xxx"
+                avatar_url: "xxx"
+                bio: "xxx"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "The user id is invalid"
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "not_found"
+                error_description: "This user does not exist"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
   /users:
     get:
       summary: Lists all users
