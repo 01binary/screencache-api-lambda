@@ -6,6 +6,100 @@ info:
 servers:
   - url: https://www.screencache.io/api/v1
 paths:
+  /users/{userId}/friends:
+    get:
+      summary: List user friends.
+      operationId: listFriends
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to list friends for
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Friend name query, returns friends containing this keyword in their name when specified (not empty or whitespace)
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: The 1-based page index when paginating (max 100, default 1)
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100, default 50)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: A paged dictionary of users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsersResponse"
+              example:
+                page: 1
+                limit: 50
+                pages: 5
+                users:
+                  123:
+                    id: 123
+                    nickname: "user1"
+                    avatar_url: "xxx"
+                  456:
+                    id: 456
+                    nickname: "user2"
+                    avatar_url: "xxx"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                Parameter q is too long:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'q' is too long"
+                Parameter q contains invalid characters:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'q' contains invalid characters"
+                Parameter page must be a number greater than 0:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'page' must be a number greater than 0"
+                Parameter limit must be greater than 0:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'limit' must be a number greater than 0"
+                Parameter limit must be max 100:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'limit' must be a number less than or equal to 100"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
+
   /users/{userId}/images:
     post:
       summary: Upload an image.
@@ -20,25 +114,12 @@ paths:
           schema:
             type: string
       requestBody:
-        description: xxx
+        description: The image to upload
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/ImageUploadRequest'
-            example:
-              image:
-                type: object
-                properties:
-                  uri:
-                    type: string
-                    description: The image URI on the local device
-                  name:
-                    type: string
-                    description: The unique image name for the current user
-                  type:
-                    type: string
-                    description: The image MIME type
       responses:
         '201':
           description: Created
@@ -399,18 +480,6 @@ components:
         id:
           type: integer
           format: int32
-    ImageUploadResponse:
-      type: object
-      required:
-        - image_id
-        - image_url
-      properties:
-        image_id:
-          type: string
-          description: The unique Id assigned to the image after upload
-        image_url:
-          type: string
-          description: The URL of the uploaded image on S3
     ImageUploadRequest:
       type: object
       required:
@@ -425,13 +494,23 @@ components:
           properties:
             uri:
               type: string
-              description: The image URI on the local device
             name:
               type: string
-              description: The name the mobile client is assigning to the image
+              format: binary
             type:
               type: string
-              description: The image MIME type
+    ImageUploadResponse:
+      type: object
+      required:
+        - image_id
+        - image_url
+      properties:
+        image_id:
+          type: string
+          description: The unique Id assigned to the image after upload
+        image_url:
+          type: string
+          description: The URL of the uploaded image on S3
     ErrorResponse:
       type: object
       required:
