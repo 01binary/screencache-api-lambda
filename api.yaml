@@ -6,7 +6,146 @@ info:
 servers:
   - url: https://www.screencache.io/api/v1
 paths:
+  /users/{userId}/posts/{postId}:
+    get:
+      summary: Get user post details.
+      operationId: getPost
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to create a post for
+          schema:
+            type: integer
+            format: int32
+        - name: postId
+          in: path
+          required: true
+          description: The id of the post to get details for
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Post details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostDetailsResponse"
+              example:
+                id: 1234
+                time_stamp: 999999
+                image_url: "xxx"
+                text: "xxx"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                User does not exist:
+                  error: "not_found"
+                  error_description: "A user with this Id does not exist"
+                Post does not exist:
+                  error: "not_found"
+                  error_description: "A post with this Id does not exist"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
   /users/{userId}/posts:
+    post:
+      summary: Create a new post.
+      operationId: createPost
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to create a post for
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        description: New post contents
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddPostRequest"
+            example:
+              image_url: "xxx"
+              text: "xxx"
+      responses:
+        '201':
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddPostResponse"
+              example:
+                id: 1234
+                time_stamp: 999999
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "not_found"
+                error_description: "A user with this Id does not exist"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                Image URL is missing or invalid:
+                  error: "invalid_request"
+                  error_description: "The field 'image_url' is missing or invalid"
+                Image is missing or invalid:
+                  error: "invalid_request"
+                  error_description: "The image specified by 'image_url' does not exist"
+                Text is too long:
+                  error: "invalid_request"
+                  error_description: "The field 'text' is too long"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
     get:
       summary: List user posts.
       operationId: listPosts
@@ -18,7 +157,8 @@ paths:
           required: true
           description: The id of the user to list posts for
           schema:
-            type: string
+            type: integer
+            format: int32
         - name: q
           in: query
           description: Search criteria for filtering posts including logical search operators that join search keywords
@@ -85,6 +225,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                Parameter q is too long:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'q' is too long"
+                Parameter q contains invalid characters:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'q' contains invalid characters"
+                Parameter page must be a number greater than 0:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'page' must be a number greater than 0"
+                Parameter limit must be greater than 0:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'limit' must be a number greater than 0"
+                Parameter limit must be max 100:
+                  error: "invalid_request"
+                  error_description: "The query parameter 'limit' must be a number less than or equal to 100"
         '500':
           description: Server error
           content:
