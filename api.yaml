@@ -7,6 +7,131 @@ servers:
   - url: https://www.screencache.io/api/v1
 paths:
   /users/{userId}/posts/{postId}:
+    delete:
+      summary: Delete a user post.
+      operationId: deletePost
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to create a post for
+          schema:
+            type: integer
+            format: int32
+        - name: postId
+          in: path
+          required: true
+          description: The id of the post to get details for
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Post updated
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '404':
+          description: User or post not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                User does not exist:
+                  error: "not_found"
+                  error_description: "A user with this Id does not exist"
+                Post does not exist:
+                  error: "not_found"
+                  error_description: "A post with this Id does not exist"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
+    put:
+      summary: Update user post.
+      operationId: updatePost
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to create a post for
+          schema:
+            type: integer
+            format: int32
+        - name: postId
+          in: path
+          required: true
+          description: The id of the post to get details for
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        description: Update post content
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schema/PostUpdateRequest"
+            example:
+              text: "xxx"
+      responses:
+        '204':
+          description: Post updated
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "The field 'text' is too long"
+        '404':
+          description: User or post not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                User does not exist:
+                  error: "not_found"
+                  error_description: "A user with this Id does not exist"
+                Post does not exist:
+                  error: "not_found"
+                  error_description: "A post with this Id does not exist"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
     get:
       summary: Get user post details.
       operationId: getPost
