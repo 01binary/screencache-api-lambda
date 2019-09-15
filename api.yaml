@@ -6,6 +6,43 @@ info:
 servers:
   - url: https://www.screencache.io/api/v1
 paths:
+  /account:
+    get:
+      summary: Return information about the currently logged in user's account and a short-lived CSRF Token that can be passed to other auth requests in the CSRF-Token header. The user information will be null if the Bearer token is missing or expired.
+      operationId: getAccount
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Account information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAccountResponse"
+              example:
+                user:
+                  id: "xxx"
+                  nickname: "xxx"
+                  username: "email@domain.com"
+                csrf_token: "xxx"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid Authorization header or Bearer token"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
   /users/{userId}/posts/{postId}:
     delete:
       summary: Delete a user post.
