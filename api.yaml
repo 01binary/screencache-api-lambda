@@ -6,9 +6,87 @@ info:
 servers:
   - url: https://www.screencache.io/api/v1
 paths:
+  /account/login:
+    post:
+      summary: Login.
+      operationId: login
+      parameters:
+        - name: CSRF-Token
+          in: header
+          required: true
+          description: The request verification token
+          schema:
+            type: string
+      requestBody:
+        description: Password Grant Request
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schema/LoginRequest"
+            example:
+              grant_type: "password"
+              username: "email@domain.com"
+              password: "secret"
+      responses:
+        '200':
+          description: Access Token Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizedResponse"
+              example:
+                access_token: "xxx"
+                token_type: "Bearer"
+                expires_in: 360000
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                CSRF Token missing or invalid:
+                  error: "invalid_request"
+                  error_description: "The header 'CSRF-Token' is missing or invalid"
+                Unsupported grant type:
+                  error: "invalid_request"
+                  error_description: "Unsupported grant_type"
+                Username is required:
+                  error: "invalid_request"
+                  error_description: "The field 'username' is required"
+                Password is required:
+                  error: "invalid_request"
+                  error_description: "The field 'password' is required"
+                Username is invalid:
+                  error: "invalid_request"
+                  error_description: "The field 'username' must be a valid email"
+                Username is too long:
+                  error: "invalid_request"
+                  error_description: "The field 'username' is too long"
+                Password is too long:
+                  error: "invalid_request"
+                  error_description: "The field 'password' is too long"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
   /account:
     get:
-      summary: Return information about the currently logged in user's account and a short-lived CSRF Token that can be passed to other auth requests in the CSRF-Token header. The user information will be null if the Bearer token is missing or expired.
+      summary: Logged in user info
       operationId: getAccount
       security:
         - bearerAuth: []
@@ -825,6 +903,22 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    LoginRequest:
+      type: object
+      required:
+        - grant_type
+        - username
+        - password
+      properties:
+        grant_type:
+          type: string
+          description: The OAuth grant type, should be set to 'password'
+        username:
+          type: string
+          description: The account username, should be a valid email
+        password:
+          type: string
+          description: The account password
     UpdateAccountRequest:
       type: object
       required:
