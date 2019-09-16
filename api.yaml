@@ -6,9 +6,36 @@ info:
 servers:
   - url: https://www.screencache.io/api/v1
 paths:
+  /account/logout:
+    post:
+      summary: Logout
+      operationId: logout
+      security:
+        - bearerAuth
+      responses:
+        '204':
+          description: User logged out
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
   /account/login:
     post:
-      summary: Login.
+      summary: Login
       operationId: login
       parameters:
         - name: CSRF-Token
