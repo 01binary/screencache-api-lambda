@@ -1868,6 +1868,8 @@ Pragma: no-cache
 
 ### PUT /account
 
+Update account information.
+
 **request headers**
 
 ```
@@ -1918,14 +1920,14 @@ Pragma: no-cache
 ```
 {
     "error": "invalid_request",
-    "error_description": "The field `nickname` contains invalid characters"
+    "error_description": "The field 'nickname' contains invalid characters"
 }
 ```
 
 ```
 {
     "error": "invalid_request",
-    "error_description": "The field `nickname` is too long"
+    "error_description": "The field 'nickname' is too long"
 }
 ```
 

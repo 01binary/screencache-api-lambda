@@ -411,6 +411,62 @@ paths:
                 error: "server_error"
                 error_description: "The server was unable to process this request"
   /account:
+    put:
+      summary: Update account info
+      operationId: updateAccount
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAccountRequest"
+            example:
+              username: "xxx"
+              nickname: "xxx"
+      responses:
+        '204':
+          description: Account updated
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                Nickname is invalid:
+                  error: "invalid_request"
+                  error_description: "The field 'nickname' contains invalid characters"
+                Nickname is too long:
+                  error: "invalid_request"
+                  error_description: "The field 'nickname' is too long"
+                Nickname is not unique:
+                  error: "invalid_request"
+                  error_description: "This nickname is already taken"
+                Avatar URL invalid:
+                  error: "invalid_request"
+                  error_description: "The field 'avatar_url' does not refer to a valid uploaded image"
+                Bio is too long:
+                  error: "invalid_request"
+                  error_description: "The field 'bio' is too long"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
     get:
       summary: Retrieve logged in user info
       operationId: getAccount
