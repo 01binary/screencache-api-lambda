@@ -6,6 +6,55 @@ info:
 servers:
   - url: https://www.screencache.io/api/v1
 paths:
+  /account/validate:
+    post:
+      summary: Validate account
+      operationId: validateAccount
+      parameters:
+        - name: CSRF-Token
+          in: header
+          schema:
+            type: string
+          required: true
+          description: Request verification token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValidateAccountRequest"
+            example:
+              username: "xxx"
+              nickname: "xxx"
+              password: "xxx"
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidateAccountResponse"
+              example:
+                username_valid: true
+                nickname_valid: false
+                password_valid: false
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "The header 'CSRF-Token' is missing or invalid"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
   /account/change-password:
     post:
       summary: Change password
@@ -1180,6 +1229,39 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    ValidateAccountResponse:
+      type: object
+      required:
+        - username_valid
+        - nickname_valid
+        - password_score
+      properties:
+        username_valid:
+          type: boolean
+          description: Whether the username is unique
+        nickname_valid:
+          type: boolean
+          description: Whether the password is unique
+        password_score:
+          type: integer
+          format: int32
+          description: The password strength score from ZXCVBN library
+    ValidateAccountRequest:
+      type: object
+      required:
+        - username
+        - nickname
+        - password
+      properties:
+        username:
+          type: string
+          description: Check if the username is valid
+        nickname:
+          type: string
+          description: Check if the nickname is valid
+        password:
+          type: string
+          description: Check password strength score
     LoginRequest:
       type: object
       required:

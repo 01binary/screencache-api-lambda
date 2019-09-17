@@ -1817,7 +1817,8 @@ CSRF-Token: xxx
 ```
 {
     "username": "xxx",
-    "nickname": "xxx"
+    "nickname": "xxx",
+    "password": "xxx"
 }
 ```
 
@@ -1830,7 +1831,8 @@ Content-Type: application/json
 ```
 {
     "username_valid": true,
-    "nickname_valid": false
+    "nickname_valid": false,
+    "password_valid": false
 }
 ```
 
