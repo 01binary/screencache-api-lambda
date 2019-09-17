@@ -6,6 +6,67 @@ info:
 servers:
   - url: https://www.screencache.io/api/v1
 paths:
+  /account/reset-password:
+    post:
+      summary: Reset password
+      operationId: resetPassword
+      parameters:
+        - name: CSRF-Token
+          in: header
+          schema:
+            type: string
+          required: true
+          description: Request verification token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+            example:
+              password_reset_token: "xxx"
+              new_password: "xxx"
+      responses:
+        '200':
+          description: Access Token Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizedResponse"
+              example:
+                access_token: "xxx"
+                token_type: "Bearer"
+                expires_in: 36000
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                CSRF token missing or invalid:
+                  error: "invalid_request"
+                  error_description: "The header 'CSRF-Token' is missing or invalid"
+                Token missing or invalid:
+                  error: "invalid_request"
+                  error_description: "The field 'password_reset_token' is missing or invalid"
+                Token expired:
+                  error: "invalid_request"
+                  error_description: "This token has expired"
+                Password is required:
+                  error: "invalid_request"
+                  error_description: "The field 'password' is required"
+                Password is insecure:
+                  error: "invalid_request"
+                  error_description: "This password does not meet password strength requirements"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
   /account/recover-password:
     post:
       summary: Request a password recovery email
