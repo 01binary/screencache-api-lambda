@@ -2,7 +2,15 @@
 
 See [Screen Cache UX](./ux.md) for details of the user experience.
 
-## Authentication
+|Domain|Description|
+|-|-|
+|Account|Transparent and comprehensive user authentication experience with focus on security and reducing friction|
+|Screenshots|The core business domain allowing users to upload and annotate screenshots as well as share them with each other|
+|Profile|The social aspect allowing users to control how they are seen and personalize their experience|
+|Friends|The social aspect allowing users to build a network of friends, adding to platform equity by making it harder to leave|
+|Messages|The social aspect allowing users to message each other, enabling strong and meaningful connections|
+
+## Account
 
 ### As an anonymous user, I can signup for a new account
 * **Given** I launch Screen Cache without previously logging in or having been logged out
@@ -90,7 +98,81 @@ See [Screen Cache UX](./ux.md) for details of the user experience.
 * **Then** I am taken to the `Login` screen
 * **And** my login information is erased from my device
 
-## Managing Screenshots
+### As a user, I can manage my account
+
+* **Given** I am logged into Screen Cache
+* **And** I am viewing the `Profile` screen
+* **When** I tap `Manage your account` heading
+* **Then** the heading expands to reveal `Change Password` and `Delete Account` buttons
+
+### As a user, I can delete my account
+
+* **Given** I am logged into Screen Cache
+* **And** I am viewing the `Profile` screen
+* **And** I tapped the `Manage your account` heading to expand it
+* **And** I tapped the `Delete Account` button
+* **Then** I see a confirmation prompt with heading `Delete Account`, text `Are you sure you want to delete your account?`, `Cancel`, and `Yes, delete my account` buttons
+* **And** I tap `Yes, delete my account` button
+* **Then** my account is deleted and I am directed to the `Login` screen
+
+### As a user, I can see a meaningful error message when my account could not be deleted
+
+* **Given** I am logged into Screen Cache
+* **And** I am viewing the `Profile` screen
+* **And** I tapped the `Manage your account` heading to expand it
+* **And** I tapped the `Delete Account` button
+* **When** I tap `Yes, delete my account` on the `Delete Account` confirmation prompt
+* **And** my account could not be deleted due to a server error
+* **Then** I see an error [banner](https://material.io/components/banners/) with text `Error communicating with our servers`
+* **And** the error persists while the application retries the request with exponential back-off
+* **And** the error is hidden if the request finally succeeds
+* **And** user has the option to go back to the previous screen, which will stop retrying the request
+
+### As a user, I can change my password
+
+* **Given** I am logged into Screen Cache
+* **And** I am viewing the `Profile` screen
+* **And** I tap the `Manage your account` heading to expand it
+* **And** I tap the `Change Password` button
+* **Then** I am directed to the `Change Password` screen with `New Password`, `Confirm Password`, `Password Strength`, `Change Password` and `Back` controls
+* **And** I tap the `Change Password` button after entering and confirming my new password
+* **And** the form has no validation errors for `Confirm Password` or `Password Strength`
+* **Then** my password is changed
+* **And** I see an informational [banner](https://material.io/components/banners/) with text `Your password has been changed`
+* **And** The banner disappears after one second
+
+### As a user, I can see meaningful validation errors when submitting the change password form
+
+* **Given** I am logged into Screen Cache
+* **And** I am submitting the `Change Password` form
+* **When** the `New Password` does not match the password requirements
+* **And** the field looses focus because I tap on the form or another control
+* **Then** a validation error is displayed under the field based on the calculated password strength:
+    * Between `0` and `2`: the warning explains the reason why the password is weak
+    * Above `2`: the validation error is hidden
+* **Then** a 3-segment bar (`Password Strength` bar) under the field but above the validation error updates the segments according to the password score:
+    * `0` or `1`: 1 of 3 bars is filled with `Screen Cache Danger` color
+    * `2`: 2 of 3 bars are filled with `Screen Cache Warning` color
+    * `3`: 3 of 3 bars are filled with `Screen Cache Success` color
+    * `4`: 3 of 3 bars are filled with `Screen Cache Primary` color
+
+* **Given** I am logged into Screen Cache
+* **And** I am submitting the `Change Password` form
+* **When** the text entered into `Confirm Password` field does not match the text in `New Password` field
+* **And** the field looses focus because I tap on the form or another control
+* **Then** a validation error is displayed under the field with text `Please re-enter the same password`
+
+### As a user, I can see a meaningful error message when my password could not be changed
+
+* **Given** I am logged into Screen Cache
+* **And** I am submitting the `Change Password` form
+* **When** my password could not be changed due to a server error
+* **Then** I see an error [banner](https://material.io/components/banners/) with text `Error communicating with our servers`
+* **And** the error persists while the application retries the request with exponential back-off
+* **And** the error is hidden if the request finally succeeds
+* **And** user has the option to go back to the previous screen, which will stop retrying the request
+
+## Screenshots
 
 ### As a user, I can upload and annotate a screenshot
 
@@ -262,6 +344,8 @@ See [Screen Cache UX](./ux.md) for details of the user experience.
 * **And** the error is hidden if the request finally succeeds
 * **And** user has the option to go back to the previous screen, which will loose the changes being requested
 
+## Friends
+
 ### As a user, I can view my friends
 
 * **Given** I am logged into Screen Cache
@@ -341,80 +425,6 @@ See [Screen Cache UX](./ux.md) for details of the user experience.
 * **Then** I am taken to my `Home` screen displaying my friend's screenshots instead of my own
 
 > Note: acceptance criteria for friend's screenshots is the same as for the user's own screenshots, including all searching and error cases.
-
-### As a user, I can manage my account
-
-* **Given** I am logged into Screen Cache
-* **And** I am viewing the `Profile` screen
-* **When** I tap `Manage your account` heading
-* **Then** the heading expands to reveal `Change Password` and `Delete Account` buttons
-
-### As a user, I can delete my account
-
-* **Given** I am logged into Screen Cache
-* **And** I am viewing the `Profile` screen
-* **And** I tapped the `Manage your account` heading to expand it
-* **And** I tapped the `Delete Account` button
-* **Then** I see a confirmation prompt with heading `Delete Account`, text `Are you sure you want to delete your account?`, `Cancel`, and `Yes, delete my account` buttons
-* **And** I tap `Yes, delete my account` button
-* **Then** my account is deleted and I am directed to the `Login` screen
-
-### As a user, I can see a meaningful error message when my account could not be deleted
-
-* **Given** I am logged into Screen Cache
-* **And** I am viewing the `Profile` screen
-* **And** I tapped the `Manage your account` heading to expand it
-* **And** I tapped the `Delete Account` button
-* **When** I tap `Yes, delete my account` on the `Delete Account` confirmation prompt
-* **And** my account could not be deleted due to a server error
-* **Then** I see an error [banner](https://material.io/components/banners/) with text `Error communicating with our servers`
-* **And** the error persists while the application retries the request with exponential back-off
-* **And** the error is hidden if the request finally succeeds
-* **And** user has the option to go back to the previous screen, which will stop retrying the request
-
-### As a user, I can change my password
-
-* **Given** I am logged into Screen Cache
-* **And** I am viewing the `Profile` screen
-* **And** I tap the `Manage your account` heading to expand it
-* **And** I tap the `Change Password` button
-* **Then** I am directed to the `Change Password` screen with `New Password`, `Confirm Password`, `Password Strength`, `Change Password` and `Back` controls
-* **And** I tap the `Change Password` button after entering and confirming my new password
-* **And** the form has no validation errors for `Confirm Password` or `Password Strength`
-* **Then** my password is changed
-* **And** I see an informational [banner](https://material.io/components/banners/) with text `Your password has been changed`
-* **And** The banner disappears after one second
-
-### As a user, I can see meaningful validation errors when submitting the change password form
-
-* **Given** I am logged into Screen Cache
-* **And** I am submitting the `Change Password` form
-* **When** the `New Password` does not match the password requirements
-* **And** the field looses focus because I tap on the form or another control
-* **Then** a validation error is displayed under the field based on the calculated password strength:
-    * Between `0` and `2`: the warning explains the reason why the password is weak
-    * Above `2`: the validation error is hidden
-* **Then** a 3-segment bar (`Password Strength` bar) under the field but above the validation error updates the segments according to the password score:
-    * `0` or `1`: 1 of 3 bars is filled with `Screen Cache Danger` color
-    * `2`: 2 of 3 bars are filled with `Screen Cache Warning` color
-    * `3`: 3 of 3 bars are filled with `Screen Cache Success` color
-    * `4`: 3 of 3 bars are filled with `Screen Cache Primary` color
-
-* **Given** I am logged into Screen Cache
-* **And** I am submitting the `Change Password` form
-* **When** the text entered into `Confirm Password` field does not match the text in `New Password` field
-* **And** the field looses focus because I tap on the form or another control
-* **Then** a validation error is displayed under the field with text `Please re-enter the same password`
-
-### As a user, I can see a meaningful error message when my password could not be changed
-
-* **Given** I am logged into Screen Cache
-* **And** I am submitting the `Change Password` form
-* **When** my password could not be changed due to a server error
-* **Then** I see an error [banner](https://material.io/components/banners/) with text `Error communicating with our servers`
-* **And** the error persists while the application retries the request with exponential back-off
-* **And** the error is hidden if the request finally succeeds
-* **And** user has the option to go back to the previous screen, which will stop retrying the request
 
 ## Messages
 
