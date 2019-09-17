@@ -1496,14 +1496,14 @@ Pragma: no-cache
 ```
 {
     "error": "invalid_request",
-    "error_description": "This field 'nickname' contains invalid characters"
+    "error_description": "The field 'nickname' contains invalid characters"
 }
 ```
 
 ```
 {
     "error": "invalid_request",
-    "error_description": "This field 'nickname' is too long"
+    "error_description": "The field 'nickname' is too long"
 }
 ```
 
@@ -1734,6 +1734,21 @@ CSRF-Token: xxx
 No response body
 ```
 
+**401: unauthorized**
+
+```
+Content-Type: application/json
+Cache-Control: no-store
+Pragma: no-cache
+```
+
+```
+{
+    "error": "invalid_request",
+    "error_description": "Invalid or missing Authorization header or Bearer token"
+}
+```
+
 **400: invalid request**
 
 ```
@@ -1746,13 +1761,6 @@ Pragma: no-cache
 {
     "error": "invalid_request",
     "error_description": "The header 'CSRF-Token' is missing or invalid"
-}
-```
-
-```
-{
-    "error": "invalid_request",
-    "error_description": "Invalid or missing Authorization header or Bearer token"
 }
 ```
 
