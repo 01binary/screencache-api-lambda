@@ -411,8 +411,34 @@ paths:
                 error: "server_error"
                 error_description: "The server was unable to process this request"
   /account:
+    delete:
+      summary: Delete account
+      operationId: deleteAccount
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Account deleted
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "invalid_request"
+                error_description: "Invalid or missing Authorization header or Bearer token"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
     put:
-      summary: Update account info
+      summary: Update logged in user info
       operationId: updateAccount
       security:
         - bearerAuth: []
