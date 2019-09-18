@@ -6,6 +6,8 @@ Posts are indexed for full-text search in Elasticsearch by using insert/update t
 
 User uploaded images are stored in S3 bucket `screencache-images`, in folders with a unique numeric id for each user. Each image has a unique numeric id. The image URL can be calculated by combining the S3 bucket URL with `user_id` and `image_id`.
 
+<img src="./images/erd.svg" alt="database">
+
 ## Tables
 
 ### screencache-posts
@@ -13,7 +15,7 @@ User uploaded images are stored in S3 bucket `screencache-images`, in folders wi
 |Property|Type|Key|Description|
 |-|-|-|-|
 |post_id|Number|Partition Key|Unique post id|
-|timestamp|Number|Sort Key|Unix epoch timestamp|
+|timestamp|Number|Sort Key for Primary and Secondary Index|Unix epoch timestamp|
 |user_id|Number|Secondary Index|User id|
 |image_id|Number||Screenshot image id (stored in `screencache-images` S3 bucket under user id)|
 |text|String||Screenshot annotation|
