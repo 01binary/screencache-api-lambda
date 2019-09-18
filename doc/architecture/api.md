@@ -1,6 +1,6 @@
 # Screen Cache API
 
-Screen Cache exports a serverless public-facing API used by our mobile app client. The API is secured by HTTPS and [OAuth2 authentication](https://tools.ietf.org/html/rfc6749) using the [Password grant type](https://oauth.net/2/grant-types/password/).
+Screen Cache exports a serverless public-facing API used by our mobile app client. The API is secured by HTTPS, CSRF Tokens and [OAuth2 authentication](https://tools.ietf.org/html/rfc6749) using the [Password grant type](https://oauth.net/2/grant-types/password/). The [Cognito server-side authentication flow](https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html#amazon-cognito-user-pools-server-side-authentication-flow) is used to signup and authorize users in `screencache-app` user pool.
 
 See the [Screen Cache Open API Definition](../../api.yaml) for details. This file can be imported into [PostMan](https://www.getpostman.com/) to query our endpoints.
 
