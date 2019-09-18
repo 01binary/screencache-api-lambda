@@ -4,8 +4,7 @@
 
 Screen Cache is a social mobile app that lets users upload, manage and search screenshots they take while using other social platforms (including Reddit, Twitter, and Facebook) and share their uploaded screenshots with friends. Users can annotate their own screenshots and publish limited information about themselves in their profile, such as an avatar and bio. Connected users can also send messages to each other.
 
-* See [Product Requirements](./requirements.md) for a detailed breakdown of the supported functionality.
-* See [Business Plan](./business-plan.md) for a detailed market share and demand analysis.
+See [Product Requirements](./requirements.md) for a detailed breakdown of the supported functionality.
 
 ## Technology
 
