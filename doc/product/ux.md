@@ -38,4 +38,4 @@ The following colors are harmonized and adjusted to meet WCAG 2.0 AAA accessibil
 
 ## Compositions
 
-UX compositions are designed with [Sketch](https://www.sketch.com/) and exported as images usable by the development team.
+UX compositions are designed with [Sketch](https://www.sketch.com/) and exported as images usable by the development team: [ux.sketch](./ux.sketch).
