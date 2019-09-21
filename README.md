@@ -4,7 +4,7 @@ The Screen Cache mobile backend and documentation.
 
 ## Backend
 
-See express.js server in `app.js`, this will be run inside of an AWS lambda.
+See express.js server in [app.js](./server/app.js) and the API spec in [api.yaml](./api.yaml).
 
 ## Documentation
 
