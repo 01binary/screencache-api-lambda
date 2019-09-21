@@ -12,4 +12,4 @@ Screen Cache will be distributed through the Apple store as an iOS application. 
 
 The scalable backend infrastructure deployed on Amazon Web Services (AWS) will enable Screen Cache to serve many concurrent requests, scaling the price of running the application with the number of users without requiring changes to code, data, or the infrastructure. The infrastructure setup is scripted by using Cloud Formation and can be moved to or re-deployed on any number of additional AWS tenants.
 
-See [Architecture Design](../architecture/design.md) for detailed information about Screen Cache application stack.
+See [Architecture Design](../architecture/index.md) for detailed information about Screen Cache application stack.

@@ -1,21 +1,21 @@
 const db = require('../lib/db')
-const table = { TableName: 'screen-cache-posts' }
+const table = { TableName: 'screencache-posts' }
 
 module.exports = {
-    getPost: ({ userId, timeStamp }) => new Promise((resolve, reject) => (
-        db.get(
+    getPost: ({ postId }) => new Promise((resolve, reject) => (
+        db.query(
             {
                 ...table,
-                Key: {
-                    userId,
-                    timeStamp
+                KeyConditionExpression: 'post_id = :whichPost',
+                ExpressionAttributeValues : {
+                    ':whichPost': postId
                 }
             },
             (err, data) => {
                 if (err)
                     reject(err)
                 else
-                    resolve(data.Item)
+                    resolve(data)
             })
     )),
 
@@ -23,32 +23,9 @@ module.exports = {
         db.query(
             {
                 ...table,
-                KeyConditionExpression: 'userId = :byUser',
+                KeyConditionExpression: 'user_id = :byUser',
                 ExpressionAttributeValues: {
                     ':byUser': userId
-                }
-            },
-            (err, data) => {
-                if (err)
-                    reject(err)
-                else
-                    resolve(data.Items)
-            }
-        )
-    )),
-
-    getPostsByUserDate: ({ userId, fromMoment, toMoment }) => new Promise((resolve, reject) => (
-        db.query(
-            {
-                ...table,
-                KeyConditionExpression: 'userId = :id and #date between :from and :to',
-                ExpressionAttributeNames: {
-                    '#date': 'timeStamp'
-                },
-                ExpressionAttributeValues: {
-                    ':id': userId,
-                    ':from': fromMoment.unix(),
-                    ':to': toMoment.unix()
                 }
             },
             (err, data) => {

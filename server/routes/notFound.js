@@ -1,7 +1,7 @@
-module.exports = (req, res, next) => {
-    res
-        .status(404)
-        .json({
-            code: 'NotFound'
-        })
+module.exports = (req, res) => {
+    res.status(404)
+    res.send({
+        error: 'not_found',
+        error_description: 'No endpoint matches this path'
+    })
 }

@@ -1,11 +1,11 @@
-const auth = require('./auth')
-const posts = require('./posts')
+const account = require('./account')
 const users = require('./users')
+const error = require('./error')
 const notFound = require('./notFound')
 
 module.exports = {
-    auth,
-    posts,
+    account,
     users,
+    error,
     notFound
 }

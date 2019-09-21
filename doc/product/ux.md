@@ -4,7 +4,7 @@
 
 Screen Cache mobile app follows Google's [Material Design](https://material.io) standards to achieve a clean, intuitive user interface.
 
-(insert branding image here with iso breakdown of main screens)
+<img src="./images/board.png" alt="design">
 
 ## Layout
 
