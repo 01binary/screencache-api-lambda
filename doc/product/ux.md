@@ -21,7 +21,7 @@ The following colors are harmonized and adjusted to meet WCAG 2.0 AAA accessibil
 
 &nbsp;
 
-<img src="./images/colors.svg" alt="color theory" width="200px">
+<img src="./images/colors.png" alt="color theory" width="200px">
 
 &nbsp;
 
