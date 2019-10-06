@@ -1,3 +1,5 @@
 module.exports = {
-    DATE_FORMAT: 'yyyy-mm-dd'
+    DATE_FORMAT: 'yyyy-mm-dd',
+    NICKNAME_PATTERN: /^[a-zA-Z]([._-]?[a-zA-Z0-9]+)*$/,
+    USERNAME_PATTERN: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 }

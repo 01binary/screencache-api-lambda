@@ -3,12 +3,11 @@ const table = { TableName: 'screencache-posts' }
 
 module.exports = {
     getPost: ({ postId }) => new Promise((resolve, reject) => (
-        db.query(
+        db.get(
             {
                 ...table,
-                KeyConditionExpression: 'post_id = :whichPost',
-                ExpressionAttributeValues : {
-                    ':whichPost': postId
+                Key: {
+                    post_id: postId
                 }
             },
             (err, data) => {

@@ -1830,9 +1830,23 @@ Content-Type: application/json
 
 ```
 {
-    "username_valid": true,
-    "nickname_valid": false,
-    "password_valid": false
+    "nickname_result": {
+        "valid": true
+    },
+    "username_result": {
+        "valid": true
+    },
+    "password_result": {
+        "valid": false,
+        "score": 0,
+        "feedback": {
+            "warning": "Repeats like \"aaa\" are easy to guess",
+            "suggestions": [
+                "Add another word or two. Uncommon words are better.",
+                "Avoid repeated words and characters"
+            ]
+        }
+    }
 }
 ```
 

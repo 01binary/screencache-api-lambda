@@ -34,9 +34,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/ValidateAccountResponse"
               example:
-                username_valid: true
-                nickname_valid: false
-                password_valid: false
+                nickname_result:
+                  valid: false
+                username_result:
+                  valid: true
+                password_result:
+                  valid: false
+                  score: 0
+                  feedback:
+                      warning: "Repeats like \"aaa\" are easy to guess"
         '400':
           description: Invalid request
           content:
@@ -1314,20 +1320,53 @@ components:
     ValidateAccountResponse:
       type: object
       required:
-        - username_valid
-        - nickname_valid
-        - password_score
+        - nickname_result
+        - username_result
+        - password_result
       properties:
-        username_valid:
-          type: boolean
-          description: Whether the username is unique
-        nickname_valid:
-          type: boolean
-          description: Whether the password is unique
-        password_score:
-          type: integer
-          format: int32
-          description: The password strength score from ZXCVBN library
+        nickname_result:
+          type: object
+          description: The nickname validation result
+          required:
+            - valid
+          properties:
+            valid:
+              type: boolean
+              description: Whether the nickname is unique
+        username_result:
+          type: object
+          description: The username validation result
+          required:
+            - valid
+          properties:
+            valid:
+              type: boolean
+              description: Whether the username is unique
+        password_result:
+          type: object
+          description: The username validation result
+          required:
+            - valid
+            - score
+            - feedback
+          properties:
+            valid:
+              type: boolean
+              description: Whether the password satisfies strength requirementes
+            score:
+              type: integer
+              format: int32
+              description: The password score used to visually display password strength
+            feedback:
+              type: object
+              description: The password feedback that can be displayed in the UI
+              properties:
+                warning:
+                  type: string
+                  description: The reason for password score
+                suggestions:
+                  type: array
+                  description: Suggestions for improving the password score
     ValidateAccountRequest:
       type: object
       required:

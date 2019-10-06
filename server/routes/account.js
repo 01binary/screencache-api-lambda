@@ -1,4 +1,9 @@
 const express = require('express')
+const {
+    validateNickname,
+    validateUsername,
+    validatePassword 
+} = require('../services/accountsService')
 const account = express.Router()
 
 account.get('/', (req, res) => {
@@ -16,24 +21,25 @@ account.delete('/', (req, res) => {
 
 })
 
-account.post('/validate', (req, res) => {
+account.post('/validate', (req, res, next) => {
     const {
         nickname,
         username,
         password
-    } = req.body;
+    } = req.body
 
-    // Validate nickname uniqueness by checking Cognito or DynamoDB
-
-    // Validate username uniqueness by checking Cognito or DynamoDB
-
-    // Validate password strength by using ZXCVBN
-
-    res.send({
-        username_valid: false,
-        nickname_valid: false,
-        password_valid: false
-    });
+    Promise
+        .all([
+            nickname && validateNickname(nickname)
+                .then(nickname_result => ({ nickname_result })),
+            username && validateUsername(username)
+                .then(username_result => ({ username_result })),
+            password && validatePassword(password)
+                .then(password_result => ({ password_result }))
+        ])
+        .then(results => res.send(
+            results.reduce((prev, cur) => ({ ...prev, ...cur }))))
+        .catch(next)
 })
 
 account.post('/signup', (req, res) => {

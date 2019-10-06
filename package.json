@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/01binary/screencache-api-lambda#readme",
   "aws-region": "us-west-2",
+  "aws-cognito-pool-id": "us-west-2_9wQXS3XUc",
   "dependencies": {
     "aws-sdk": "^2.513.0",
     "aws-serverless-express": "^3.3.6",
