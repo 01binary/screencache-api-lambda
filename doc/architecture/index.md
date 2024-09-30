@@ -1,37 +1,42 @@
-# Screen Cache Architecture
+# Architecture
 
-## Infrastructure Overview
+Screencache architecture consists of four major domains: API, Uploads, Annotations, and Scheduling.
 
-The services used in Screen Cache technology stack ensure maximum scalability and availability of `99.9%`:
+Users access the application through a mobile app or website frontend. The `api` Lambda serves API requests for all the actions users can perform in the app.
+
+Uploaded images are stored in `uploads` S3 bucket until the `uploads` Lambda goes through the SQS queue of uploads, processes each image (for example by removing geotags), and stores processed images in `screenshots` S3 bucket.
+
+The `annotations` Lambda sends all new images to the Machine Learning system to get automatic annotation of what's in each image.
+
+When users schedule screenshots for *spaced repetition*, the `scheduling` Lambda handles sends out notifications through SNS.
 
 <img src="./images/architecture.png" alt="architecture">
 
 |Stack|Service|Scalability|Availability|Pricing|
 |-|-|-|-|-|
 |Database|DynamoDB|Provisioned or on-demand by region or global (unlimited)|[99.99%](https://aws.amazon.com/dynamodb/sla/)|[DynamoDB pricing](https://aws.amazon.com/dynamodb/pricing/)|
-|Full-Text Search|Elasticsearch|EC2 cluster by instance size with attached EBS storage|[99.9%](https://aws.amazon.com/elasticsearch-service/sla/)|[Elasticsearch pricing](https://aws.amazon.com/elasticsearch-service/pricing/)
 |File Storage|S3|Standard or Infrequent Storage (unlimited)|[99.9%](https://aws.amazon.com/s3/sla/)|[S3 pricing](https://aws.amazon.com/s3/pricing/)|
+|Queue|SQS|Automatic elastic scaling (unlimited)|[99.9%](https://aws.amazon.com/messaging/sla/)|[SQS pricing](https://aws.amazon.com/sqs/pricing/)
+|Notifications|SNS|Automatic elastic scaling (unlimited)|[99.9%](https://aws.amazon.com/messaging/sla)|[SNS pricing](https://aws.amazon.com/sns/pricing/)
 |API|Lambda|Millions of requests|[99.99%](https://aws.amazon.com/lambda/sla/)|[Lambda pricing](https://aws.amazon.com/lambda/pricing/)|
-|API|API Gateway|Millions of requests|[99.99%](https://aws.amazon.com/api-gateway/sla/)|[API Gateway pricing](https://aws.amazon.com/cognito/pricing/)|
-|Authentication|Cognito|[Millions of users](https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html)|[99.9%](https://aws.amazon.com/cognito/sla/)|[Cognito pricing](https://aws.amazon.com/cognito/pricing/)|
+|Logging|CloudWatch|Automatic elastic scaling (unlimited)|[CloudWatch pricing](https://aws.amazon.com/cloudwatch/pricing/)|
+|Routing|API Gateway|Millions of requests|[99.99%](https://aws.amazon.com/api-gateway/sla/)|[API Gateway pricing](https://aws.amazon.com/api-gateway/pricing/)|
+|Authentication|IAM|Global service (unlimited)|Global|Free
+|Authorization|Cognito|[Millions of users](https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html)|[99.9%](https://aws.amazon.com/cognito/sla/)|[Cognito pricing](https://aws.amazon.com/cognito/pricing/)|
+|Domain Name|Route 53|Global service (unlimited)|[99.99%](https://aws.amazon.com/route53/sla/)|[Route 53 pricing](https://aws.amazon.com/route53/pricing/)|
 
 ### Operating Cost
 
-The minimum cost of maintaining Screen Cache infrastructure in Oregon (`us-west-2`) is `$30.78/mo`:
+The approximate cost to operate the application with a small number of users is about `$0.53` per month, split between *Route53* (assuming we have a custom domain name) and *API Gateway* which only has free tier for new AWS accounts.
 
-* `$3.5/mo` for `API Gateway` required to run the serverless API
-* `$26.28/mo` for a single `t2.small.elasticsearch` instance
-* `$1/mo` for `10 GB` of EBS attached to the elasticsearch instance.
-
-Charges will appear only for API Gateway and Elasticsearch if the other services stay within [free tier limits](https://aws.amazon.com/free/):
-
-|Service|Free Tier Limits (monthly)|
+|Service|Free Tier Limits|
 |-|-|
-|DynamoDB|25 GB, 200M requests|
-|Elasticsearch|750 compute hours, 10 GB on t2.small.elasticsearch (not free after 12 months)|
-|S3|5 GB, 20K downloads, 2K uploads|
-|Lambda|1M requests|
-|API Gateway|1M requests|
-|Cognito|50K user logins|
-
-For both API Gateway and Elasticsearch, billing begins 12 months after AWS account creation. Until then, the cost of running Screen Cache on a brand new AWS account is `$0` which is useful for testing and evaluation.
+|Route53|No free tier, `$0.50` per hosted zone per month|
+|API Gateway|12-month free tier, `$3.50` per `333 M` of requests after|
+|DynamoDB|`25 GB` storage, `25` read units, `25` write units, `200M` requests|
+|S3|`5 GB` storage, `20K` downloads, `2K` uploads, `100 GB` transfer|
+|SQS|`1M` requests per month|
+|SNS|`1M` mobile push notifications, `1000` emails|
+|Lambda|`1M` requests|
+|CloudWatch|`10` alarms, `3` dashboards, `5GB` storage|
+|Cognito|`50K` user logins|
