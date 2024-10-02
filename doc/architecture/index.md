@@ -1,6 +1,10 @@
 # Architecture
 
+## Domains
+
 Screencache architecture consists of four major domains: API, Uploads, Annotations, and Scheduling.
+
+<img src="./images/architecture.png" alt="architecture">
 
 Users access the application through a mobile app or website frontend. The `api` Lambda serves API requests for all the actions users can perform in the app.
 
@@ -10,7 +14,7 @@ The `annotations` Lambda sends all new images to the Machine Learning system to 
 
 When users schedule screenshots for *spaced repetition*, the `scheduling` Lambda handles sends out notifications through SNS.
 
-<img src="./images/architecture.png" alt="architecture">
+## Infrastructure
 
 |Stack|Service|Scalability|Availability|Pricing|
 |-|-|-|-|-|
@@ -25,14 +29,14 @@ When users schedule screenshots for *spaced repetition*, the `scheduling` Lambda
 |Authorization|Cognito|[Millions of users](https://docs.aws.amazon.com/cognito/latest/developerguide/limits.html)|[99.9%](https://aws.amazon.com/cognito/sla/)|[Cognito pricing](https://aws.amazon.com/cognito/pricing/)|
 |Domain Name|Route 53|Global service (unlimited)|[99.99%](https://aws.amazon.com/route53/sla/)|[Route 53 pricing](https://aws.amazon.com/route53/pricing/)|
 
-### Operating Cost
+### Operations
 
 The approximate cost to operate the application with a small number of users is about `$0.53` per month, split between *Route53* (assuming we have a custom domain name) and *API Gateway* which only has free tier for new AWS accounts.
 
 |Service|Free Tier Limits|
 |-|-|
 |Route53|No free tier, `$0.50` per hosted zone per month|
-|API Gateway|12-month free tier, `$3.50` per `333 M` of requests after|
+|API Gateway|`$3.50` per `333 M` of requests (prorated)|
 |DynamoDB|`25 GB` storage, `25` read units, `25` write units, `200M` requests|
 |S3|`5 GB` storage, `20K` downloads, `2K` uploads, `100 GB` transfer|
 |SQS|`1M` requests per month|
@@ -40,3 +44,31 @@ The approximate cost to operate the application with a small number of users is 
 |Lambda|`1M` requests|
 |CloudWatch|`10` alarms, `3` dashboards, `5GB` storage|
 |Cognito|`50K` user logins|
+
+### Database
+
+Screencache database design reflects a simple social media app with **posts** and one or more **screenshots** in each post.
+
+Users can **comment** on and **react** to posts, add **friends**, **message** them, and **invite** them to see posts.
+
+<img src="./images/erd.svg" alt="database design">
+
+Since posts may can contain slides or index cards to be memorized with *spaced learning* and *space repetition*, the **schedules** table helps us schedule notifications for these learning sessions.
+
+### Machine Learning
+
+Uploaded images are sent to a language model to generate and attach annotations that describe what's represented in each image.
+
+We evaluated the following models for performing this task. Costs are per million requests.
+
+|Model|Description|Input|Output|
+|-|-|-|-|
+|[GPT 4 Omni](https://openai.com/index/hello-gpt-4o/)|General purpose|`$5`|`$15`|
+|[GPT 4 Omni Mini](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/)|Budget general purpose|`$0.15`|`$0.60`|
+|[Gemini](https://ai.google.dev/pricing)|Multimodal, Diverse, repetitive tasks|free|free|
+|[Llama](https://www.llama.com/)|Multimodal|free|free|
+|[Claude Haiku](https://www.anthropic.com/api)|Small general purpose|`$0.25`|`$1.25`|
+|[Claude Sonnet](https://www.anthropic.com/api)|Large general purpose|`$3`|`$15`|
+|[DBRX](https://www.databricks.com/blog/introducing-dbrx-new-state-art-open-llm)|Generative|`$0.75`|`$2.25`|
+|[Pixtral](https://mistral.ai/technology/#models)|Analyze images|`$0.15`|`$0.15`|
+|[Phi Vision](https://azure.microsoft.com/en-us/pricing/details/phi-3/)|Computer vision|`$130`|`$520`|
