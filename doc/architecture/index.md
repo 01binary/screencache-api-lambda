@@ -33,6 +33,8 @@ When users schedule screenshots for *spaced repetition*, the `scheduling` Lambda
 
 The approximate cost to operate the application with a small number of users is about `$0.53` per month, split between *Route53* (assuming we have a custom domain name) and *API Gateway* which only has free tier for new AWS accounts.
 
+> The API Gateway cost is pro-rated: for `3000` requests, we would be charged `$0.0350`.
+
 |Service|Free Tier Limits|
 |-|-|
 |Route53|No free tier, `$0.50` per hosted zone per month|
