@@ -6,6 +6,26 @@ info:
 servers:
   - url: https://www.screencache.io/api/v1
 paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Health check result
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "server_error"
+                error_description: "The server was unable to process this request"
   /account/validate:
     post:
       summary: Validate account
@@ -1097,21 +1117,21 @@ paths:
                 error: "server_error"
                 error_description: "The server was unable to process this request"
 
-  /users/{userId}/images:
+  /users/{userId}/screenshots:
     post:
-      summary: Upload an image.
-      operationId: uploadImage
+      summary: Upload a screenshot.
+      operationId: uploadScreenshot
       security:
         - bearerAuth: []
       parameters:
         - name: userId
           in: path
           required: true
-          description: The id of the user to upload the image for, must be the current user
+          description: The id of the user to upload the screenshot for, must be the current user
           schema:
             type: string
       requestBody:
-        description: The image to upload
+        description: The screenshot to upload
         required: true
         content:
           multipart/form-data:
