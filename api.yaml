@@ -166,7 +166,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthorizedResponse"
+                $ref: "#/components/schemas/SignInResponse"
               example:
                 access_token: "xxx"
                 token_type: "Bearer"
@@ -277,7 +277,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthorizedResponse"
+                $ref: "#/components/schemas/SignInResponse"
               example:
                 access_token: "xxx"
                 token_type: "Bearer"
@@ -385,7 +385,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthorizedResponse"
+                $ref: "#/components/schemas/SignInResponse"
               example:
                 access_token: "xxx"
                 token_type: "Bearer"
@@ -464,7 +464,7 @@ paths:
                 error: "server_error"
                 error_description: "The server was unable to process this request"
     put:
-      summary: Update logged in user info
+      summary: Update account details
       operationId: updateAccount
       security:
         - bearerAuth: []
@@ -520,7 +520,7 @@ paths:
                 error: "server_error"
                 error_description: "The server was unable to process this request"
     get:
-      summary: Retrieve logged in user info
+      summary: Get account details
       operationId: getAccount
       security:
         - bearerAuth: []
@@ -635,7 +635,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schema/PostUpdateRequest"
+              $ref: "#/components/schema/UpdatePostRequest"
             example:
               text: "xxx"
       responses:
@@ -1340,19 +1340,9 @@ components:
     ValidateAccountResponse:
       type: object
       required:
-        - nickname_result
         - username_result
         - password_result
       properties:
-        nickname_result:
-          type: object
-          description: The nickname validation result
-          required:
-            - valid
-          properties:
-            valid:
-              type: boolean
-              description: Whether the nickname is unique
         username_result:
           type: object
           description: The username validation result
@@ -1391,15 +1381,11 @@ components:
       type: object
       required:
         - username
-        - nickname
         - password
       properties:
         username:
           type: string
           description: Check if the username is valid
-        nickname:
-          type: string
-          description: Check if the nickname is valid
         password:
           type: string
           description: Check password strength score
@@ -1419,21 +1405,6 @@ components:
         password:
           type: string
           description: The account password
-    UpdateAccountRequest:
-      type: object
-      required:
-        - nickname
-        - avatar_url
-      properties:
-        nickname:
-          type: string
-          description: The unique nickname to update
-        avatar_url:
-          type: string
-          description: The avatar URL to set
-        bio:
-          type: string
-          description: The bio blurb to set
     ChangePasswordRequest:
       type: object
       required:
@@ -1457,28 +1428,28 @@ components:
     RecoverPasswordRequest:
       type: object
       required:
-        - username
+        - email
       properties:
-        username:
+        email:
           type: string
-          description: The username for which to recover password
+          description: The email for which to recover password
     SignupRequest:
       type: object
       required:
-        - nickname
         - username
+        - email
         - password
       properties:
-        nickname:
-          type: string
-          description: The new user's unique nickname
         username:
+          type: string
+          description: The new user's unique username
+        email:
           type: string
           description: The new user's unique email
         password:
           type: string
           description: The new user's password that meets password strength requirements
-    AuthorizedResponse:
+    SignInResponse:
       type: object
       required:
         - access_token
@@ -1490,7 +1461,7 @@ components:
           description: The Bearer token that can be passed to requests that require authentication
         token_type:
           type: string
-          description: The token type identifying the token as a Bearer token
+          description: The token type, must be set to Bearer
         expires_in:
           type: integer
           format: int32
@@ -1504,81 +1475,140 @@ components:
           type: object
           required:
             - id
-            - nickname
             - username
+            - email
+            - avatar_url
           properties:
             id:
               type: string
               description: The logged in user Id
-            nickname:
-              type: string
-              description: The logged in user's nickname
             username:
               type: string
-              description: The logged in user's username (which is also the email)
-    PostUpdateRequest:
+              description: The logged in user's Username
+            email:
+              type: string
+              description: The logged in user's email
+            avatar_url:
+              type: string
+              description: The logged in user's avatar
+            bio:
+              type: string
+              description: The logged in user's bio
+            location:
+              type: string
+              description: The logged in user's location
+    UpdateAccountRequest:
       type: object
       required:
-        - text
+        - avatar_url
       properties:
-        text:
+        avatar_url:
           type: string
-          description: The post text content
+          description: The avatar URL to set
+        bio:
+          type: string
+          description: The bio blurb to set
+        location:
+          type: string
+          description: The geographic location blurb
+        email:
+          type: string
+          description: The user email
     PostDetailsResponse:
       type: object
       required:
         - id
-        - time_stamp
-        - image_url
-        - text
+        - timestamp
+        - screenshots
       properties:
         id:
           type: integer
           format: int32
           description: The unique post Id across all users
-        time_stamp:
+        timestamp:
           type: integer
           format: int32
           description: The unix epoch date/time stamp of when the post was created on the server
-        image_url:
+        title:
           type: string
-          description: The post image URL
-        text:
+          description: The post title
+        description:
           type: string
-          description: The text that annotates the post image
-    AddPostRequest:
+          description: The post typed-in description
+        annotation:
+          type: string
+          description: The post annotation from machine learning
+        public:
+          type: boolean
+          description: Whether the post is public or requires invite
+        screenshots:
+          type: array
+          description: Screenshots in this post
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Post screenshot id
+              timestamp:
+                type: number
+                description: The unix epoch date/time stamp of when the post screenshot was created on the server
+              url:
+                type: string
+                description: Screenshot url
+              title:
+                type: string
+                description: Screenshot title
+              description:
+                type: string
+                description: Screenshot typed-in description
+              annotation:
+                type: string
+                description: ML annotation generated for screenshot
+    PostRequest:
       type: object
       required:
-        - image_url
+        - title
+        - screenshots
       properties:
-        image_url:
+        title:
           type: string
-          description: The URL of the post image on S3
-        text:
+          description: The post title
+        description:
           type: string
-          description: The text that annotates the post
-    AddPostResponse:
-      type: object
-      required:
-        - id
-        - time_stamp
-      properties:
-        id:
-          type: integer
-          format: int32
-          description: The Id of the created post
-        time_stamp:
-          type: integer
-          format: int32
-          description: The Unix epoch date/time stamp of when the post was created on the server
+          description: The post description
+        public:
+          type: boolean
+          description: Whether the post is public or requires an invite to see
+        screenshots:
+          type: array
+          description: Screenshots in the post
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Post screenshot id
+              url:
+                type: string
+                description: Uploaded and processed screenshot
+              title:
+                type: string
+                description: Screenshot title
+              description:
+                type: string
+                description: Screenshot description
     AddFriendRequest:
       type: object
       required:
-        - id
+        - userId
       properties:
-        id:
-          type: integer
-          format: int32
+        userId:
+          type: string
+          description: Target user id
+        message:
+          type: string
+          description: Message to include with friend request
     ImageUploadRequest:
       type: object
       required:
@@ -1601,13 +1631,9 @@ components:
     ImageUploadResponse:
       type: object
       required:
-        - image_id
-        - image_url
+        - uri
       properties:
-        image_id:
-          type: string
-          description: The unique Id assigned to the image after upload
-        image_url:
+        uri:
           type: string
           description: The URL of the uploaded image on S3
     ErrorResponse:
@@ -1625,23 +1651,21 @@ components:
     UserDetailsResponse:
       type: object
       required:
-        - id
-        - nickname
+        - username
         - avatar_url
-        - bio
       properties:
-        id:
-          type: integer
-          description: The user id
-        nickname:
+        username:
           type: string
-          description: The user nickname
+          description: The user name
         avatar_url:
           type: string
           description: The avatar image URL on S3
         bio:
           type: string
           description: The user bio blurb
+        location:
+          type: string
+          description: The user location
     PostsResponse:
       type: object
       required:
@@ -1666,23 +1690,45 @@ components:
             type: object
             required:
               - id
-              - time_stamp
-              - image_url
-              - text
+              - timestamp
+              - title
+              - annotation
+              - screenshots
             properties:
               id:
                 type: string
                 description: The post Id
-              time_stamp:
+              timestamp:
                 type: integer
                 format: int32
                 description: The Unix epoch data/time stamp
-              image_url:
+              title:
                 type: string
-                description: The image associated with the post
-              text:
+                description: Post title
+              description:
                 type: string
-                description: The text that annotates the post image
+                description: Post description
+              annotation:
+                type: string
+                description: Post annotation
+              screenshots:
+                type: array
+                description: Screenshots in the post
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: Post screenshot id
+                    url:
+                      type: string
+                      description: Uploaded and processed screenshot
+                    title:
+                      type: string
+                      description: Screenshot title
+                    description:
+                      type: string
+                      description: Screenshot description
     UsersResponse:
       type: object
       required:
@@ -1705,16 +1751,23 @@ components:
           additionalProperties:
             type: object
             required:
-              - id
-              - nickname
-              - avatar_rl
+              - username
+              - avatar_url
+              - bio
+              - location
             properties:
               id:
                 type: integer
                 description: The user Id
-              nickname:
+              username:
                 type: string
                 description: The user nickname
               avatar_url:
                 type: string
                 description: The user avatar URL from S3
+              bio:
+                type: string
+                description: The user bio blurb
+              location:
+                type: string
+                description: Self-reported geo location
