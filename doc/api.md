@@ -3,54 +3,60 @@
 The API is described by `api.yaml` OpenAPI specification at the root of the repository.
 
 * `/health` (singleton)
+  * text `healthy`
 * `/account` (singleton)
   * `POST` `/login`
+    * [Login](#login-request) request
+    * [Login](#login-response) response
   * `POST` `/logout`
-  * `POST` `/signup`
+  * `POST` `/signup` [Signup](#signup-request) request
   * `POST` `/validate`
-  * `POST` `/changepassword`
-  * `POST` `/resetpassword`
-  * `POST` `/recoverpassword`
-  * `GET` account details
+    * [Validate](#validate-account-request) request
+    * [Validate](#validate-account-response) response
+  * `POST` `/changepassword` [Change Password](#change-password-request) request
+  * `POST` `/resetpassword` [Reset Password](#reset-password-request) request
+  * `POST` `/recoverpassword` [Recover Password](#recover-password-request) request
+  * `GET` [Account Details](#account-details-response) response
+  * `PUT` [Update Account](#update-account-request) request
   * `DELETE` account
-  * `PUT` update account
 
 * `/uploads` (singleton)
-  * `POST` upload screenshot
-
+  * `POST` [Image Upload](#image-upload-request) request
 * `/users`
-  * `GET` list users
+  * `GET` [List Users](#users-response) response
   * `/{id}`
-    * `GET` user
+    * `GET` [User Details](#user-details-response) response
     * `/friends`
-      * `GET` list friends
-      * `POST` friend request
+      * `POST` [Add Friend](#add-friend-request) request
+      * `GET` [List Friends](#friends-response) response
       * `/{id}`
-        * `PUT` accept friend request
+        * `PUT` [Accept Friend](#accept-friend-request) request
         * `DELETE` friend
     * `/messages`
-      * `GET` list messages
       * `POST` add message
+        * [Add Message](#add-message-request) request
+        * [Add Message](#add-message-response) response
+      * `GET` [List Messages](#messages-response) response
       * `/{id}`
-         * `PUT` edit message
+         * `PUT` [Update Message](#update-message-request) request
          * `DELETE` message
 * `/posts`
-  * `GET` list posts
-  * `POST` create post
+  * `GET` [List Posts](#posts-response) response
+  * `POST` [Create Post](#post-request) request
   * `/{id}`
-    * `GET` post details
-    * `PUT` edit post
+    * `GET` [Post Details](#post-details-response) response
+    * `PUT` [Edit Post](#post-request) request
     * `DELETE` post
 
-    * `POST` `/upvote`
-    * `POST` `/downvote`
-    * `PUT` `/schedule`
+    * `POST` `/upvote` (no body)
+    * `POST` `/downvote` (no body)
+    * `PUT` `/schedule` [Schedule](#post-schedule-request) request
 
     * `/comments`
-      * `GET` list comments
-      * `POST` add comment
+      * `GET` [List Comments](#comments-response) response
+      * `POST` [Add Comment](#comment-request) request
       * `/{id}`
-        * `PUT` edit comment
+        * `PUT` [Update Comment](#comment-request) request
         * `DELETE` comment
 
     * `/reactions`
@@ -154,7 +160,7 @@ Sends an email to the user with their username and password.
 }
 ```
 
-### Signin Response
+### Login Response
 
 ```
 {
@@ -164,7 +170,7 @@ Sends an email to the user with their username and password.
 }
 ```
 
-### Get Account Response
+### Account Details Response
 
 ```
 {
@@ -202,6 +208,9 @@ Sends an email to the user with their username and password.
 			title: "Post title",
 			description: "Post description",
 			annotation: "Post annotation",
+			can_vote: true,
+			up_votes: 1,
+			down_votes: 0,
 			screenshots: [
 				id: "123",
 				timestamp: 1234444000,
@@ -227,6 +236,9 @@ Response payload returned for post details.
 	description: "Typed in description",
 	annotation: "ML annotation",
 	public: true,
+	can_vote: true,
+	up_votes: 1,
+	down_votes: 0,
 	screenshots: [
 		{
 			id: "123",
@@ -242,7 +254,7 @@ Response payload returned for post details.
 
 ### Post Request
 
-Request payload sent to save a post.
+Request payload sent to create or save a post.
 
 ```
 {
@@ -260,6 +272,43 @@ Request payload sent to save a post.
 }
 ```
 
+### Post Schedule Request
+
+```
+{
+	type: "spacedRepetition",
+	start: 4343434343
+}
+```
+
+### Comments Response
+
+```
+comments: [
+	{
+		comment_id: "123",
+		post_id: "09809890",
+		screenshot_id: "934343",
+		comment_id: "34234343",
+		timestamp: 98309839038,
+		username: "author",
+		avatar_url: "avatar image",
+		comment: "hello world"
+	}
+]
+```
+
+### Comment Request
+
+```
+{
+	post_id: "09809890",
+	screenshot_id: "934343",
+	comment_id: "34093039",
+	comment: "hello world"
+}
+```
+
 ### Add Friend Request
 
 Request payload sent to request a friend connection.
@@ -271,14 +320,93 @@ Request payload sent to request a friend connection.
 }
 ```
 
-### Image Upload Request
+### Friends Response
 
-Request payload sent to upload a screenshot.
-Contains the URI of the screenshot on user's device.
+Lists user friends.
 
 ```
 {
-	uri: "image uri",
+  page: 1,
+  pages: 5,
+  limit: 10,
+  friends: [
+    {
+      id: "friend request id",
+      username: "tassock343",
+      avatar_url: "image url",
+      bio: "about me",
+      location: "self reported location",
+      accepted: true
+    }
+  ]
+}
+```
+
+### Accept Friend Request
+
+Sent to accept a friend request.
+
+```
+{
+  id: "friend request id"
+}
+```
+
+### Add Message Request
+
+```
+{
+  username: "tassock343",
+  message: "Message text"
+}
+```
+
+### Add Message Response
+
+```
+{
+	messageId: "1234",
+	timestamp: 13434343
+}
+```
+
+### Update Message Request
+
+```
+{
+  id: "message id",
+  message: "Message text"
+}
+```
+
+### Messages Response
+
+```
+{
+  page: 1,
+  pages: 5,
+  limit: 10,
+  messages: [
+    {
+      id: "message id",
+      username: "tassock343",
+      timestamp: 232323232,
+      sender: "Sender username",
+      recipient: "Recipient username",
+      message: "Message text"
+    }
+  ]
+}
+```
+
+### Image Upload Request
+
+Request payload sent to upload a screenshot.
+Contains the url of the screenshot on user's device.
+
+```
+{
+	url: "image url",
 	name: "file name",
 	type: "mime type"
 }
@@ -287,11 +415,11 @@ Contains the URI of the screenshot on user's device.
 ### Image Upload Response
 
 Response payload received after a screenshot was uploaded.
-Contains the URI of the screenshot uploaded to S3 bucket.
+Contains the URL of the screenshot uploaded to S3 bucket.
 
 ```
 {
-	uri: "image uri"
+	url: "image url"
 }
 ```
 
@@ -319,7 +447,7 @@ Contains the URI of the screenshot uploaded to S3 bucket.
 ```
 {
 	username: "legacywolf",
-	avatar_url: "image uri",
+	avatar_url: "image url",
 	bio: "Born to be wild",
 	location: "Salem, OR"
 }

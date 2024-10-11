@@ -530,7 +530,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetAccountResponse"
+                $ref: "#/components/schemas/AccountDetailsResponse"
               example:
                 user:
                   id: "xxx"
@@ -1466,7 +1466,7 @@ components:
           type: integer
           format: int32
           description: The number of seconds until this token expires
-    GetAccountResponse:
+    AccountDetailsResponse:
       type: object
       required:
         - csrf_token
