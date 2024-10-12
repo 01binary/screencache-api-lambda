@@ -2,6 +2,8 @@
 
 The API is described by `api.yaml` OpenAPI specification at the root of the repository.
 
+## Endpoints
+
 * `/health` (singleton)
   * text `healthy`
 * `/account` (singleton)
@@ -21,55 +23,79 @@ The API is described by `api.yaml` OpenAPI specification at the root of the repo
   * `DELETE` account
 
 * `/uploads` (singleton)
-  * `POST` [Image Upload](#image-upload-request) request
+  * `POST` upload screenshot
+    * [Image Upload](#image-upload-request) request
+    * [Image Upload](#image-upload-response) response
 * `/users`
-  * `GET` [List Users](#users-response) response
+  * `GET` [List Users](#list-users-response) response
   * `/{id}`
     * `GET` [User Details](#user-details-response) response
     * `/friends`
-      * `POST` [Add Friend](#add-friend-request) request
-      * `GET` [List Friends](#friends-response) response
+      * `POST` add friend
+        * [Add Friend](#add-friend-request) request
+        * [Friend Details](#friend-details-response) response
+      * `GET` [List Friends](#list-friends-response) response
       * `/{id}`
-        * `PUT` [Accept Friend](#accept-friend-request) request
+        * `GET` [Friend Details](#friend-details-response) response
+        * `PUT` [Update Friend](#update-friend-request) request
         * `DELETE` friend
     * `/messages`
       * `POST` add message
         * [Add Message](#add-message-request) request
-        * [Add Message](#add-message-response) response
-      * `GET` [List Messages](#messages-response) response
+        * [Message Details](#message-details-response) response
+      * `GET` [List Messages](#list-messages-response) response
       * `/{id}`
+         * `GET` [Message Details](#message-details-response) response
          * `PUT` [Update Message](#update-message-request) request
          * `DELETE` message
 * `/posts`
-  * `GET` [List Posts](#posts-response) response
-  * `POST` [Create Post](#post-request) request
+  * `GET` [List Posts](#list-posts-response) response
+  * `POST` create a post
+    * [Create Post](#add-post-request) request
+    * [Post Details](#post-details-response) response
   * `/{id}`
     * `GET` [Post Details](#post-details-response) response
-    * `PUT` [Edit Post](#post-request) request
+    * `PUT` [Update Post](#update-post-request) request
     * `DELETE` post
 
     * `POST` `/upvote` (no body)
     * `POST` `/downvote` (no body)
-    * `PUT` `/schedule` [Schedule](#post-schedule-request) request
+    * `/schedule`
+      * `GET` [Get Schedule](#schedule-response) response
+      * `PUT` [Update Schedule](#schedule-request) request
 
     * `/comments`
-      * `GET` [List Comments](#comments-response) response
-      * `POST` [Add Comment](#comment-request) request
+      * `GET` [List Comments](#list-comments-response) response
+      * `POST` add comment
+        * [Add Comment](#add-comment-request) request
+        * [Comment Details](#comment-details-response) response
       * `/{id}`
-        * `PUT` [Update Comment](#comment-request) request
+        * `GET` [Comment Details](#comment-details-response) response
+        * `PUT` update comment
+          * [Update Comment](#update-comment-request) request
+          * [Comment Details](#comment-details-response) response
         * `DELETE` comment
 
     * `/reactions`
-      * `GET` list reactions
-      * `POST` react to post, post screenshot, or comment
+      * `GET` [List Reactions](#list-reactions-response) response
+      * `POST` add reaction
+        * [Add Reaction](#add-reaction-request) request
+        * [Reaction Details](#reaction-details-response) response
       * `/{id}`
+        * `GET` [Reaction Details](#reaction-details-response) response
+        * `PUT` update reaction
+          * [Update Reaction](#update-reaction-request) request
+          * [Reaction Details](#reaction-details-response) response
         * `DELETE` reaction
 
     * `/invites`
-      * `GET` list invites
+      * `GET` [List Invites](#list-invites-response) response
       * `POST` invite a user
+        * [Add Invite](#add-invite-request) request
+        * [Invite Details](#invite-details-response) response
       * `/{id}`
-        `DELETE` invite
+        * `GET` [Invite Details](#invite-details-response) response
+        * `DELETE` invite
 
 ## Data Structures
 
@@ -194,7 +220,7 @@ Sends an email to the user with their username and password.
 }
 ```
 
-### Posts Response
+### List Posts Response
 
 ```
 {
@@ -203,7 +229,7 @@ Sends an email to the user with their username and password.
 	pages: 15,
 	posts: [
 		{
-			id: "123",
+			post_id: "123",
 			timestamp: 98309839038,
 			title: "Post title",
 			description: "Post description",
@@ -212,9 +238,9 @@ Sends an email to the user with their username and password.
 			up_votes: 1,
 			down_votes: 0,
 			screenshots: [
-				id: "123",
+				post_screenshot_id: "123",
 				timestamp: 1234444000,
-				url: "s23232",
+				screenshot_url: "s23232",
 				title: "Screenshot title",
 				description: "Test",
 				annotation: "ML annotation"
@@ -230,7 +256,7 @@ Response payload returned for post details.
 
 ```
 {
-	id: "123",
+	post_id: "123",
 	timestamp: 1234444000,
 	title: "Post title",
 	description: "Typed in description",
@@ -241,9 +267,9 @@ Response payload returned for post details.
 	down_votes: 0,
 	screenshots: [
 		{
-			id: "123",
+			post_screenshot_id: "123",
 			timestamp: 1234444000,
-			url: "s23232",
+			screenshot_url: "s23232",
 			title: "Screenshot title",
 			description: "Test",
 			annotation: "ML annotation"
@@ -252,7 +278,7 @@ Response payload returned for post details.
 }
 ```
 
-### Post Request
+### Add Post Request
 
 Request payload sent to create or save a post.
 
@@ -263,8 +289,7 @@ Request payload sent to create or save a post.
 	public: true,
 	screenshots: [
 		{
-			id: "123",
-			url: "https://screenache.io/screenshot3r33.jpg",
+			screenshot_url: "https://screenache.io/screenshot3r33.jpg",
 			title: "Screenshot title",
 			description: "Test"
 		}
@@ -272,7 +297,28 @@ Request payload sent to create or save a post.
 }
 ```
 
-### Post Schedule Request
+### Update Post Request
+
+Request payload sent to create or save a post.
+
+```
+{
+	post_id: "43403930",
+	title: "Post title",
+	description: "Typed in description",
+	public: true,
+	screenshots: [
+		{
+			post_screenshot_id: "09298209280",
+			screenshot_url: "https://screenache.io/screenshot3r33.jpg",
+			title: "Screenshot title",
+			description: "Test"
+		}
+	]
+}
+```
+
+### Schedule Request
 
 ```
 {
@@ -281,7 +327,18 @@ Request payload sent to create or save a post.
 }
 ```
 
-### Comments Response
+### Schedule Response
+
+```
+{
+	timestamp: 90290290290,
+	type: "spacedRepetition",
+	start: 4343434343,
+	schedule_type: "spacedRepetition"
+}
+```
+
+### List Comments Response
 
 ```
 comments: [
@@ -298,7 +355,32 @@ comments: [
 ]
 ```
 
-### Comment Request
+### Comment Details Response
+
+```
+{
+	comment_id: "123",
+	post_id: "09809890",
+	screenshot_id: "934343",
+	comment_id: "34234343",
+	timestamp: 98309839038,
+	username: "author",
+	avatar_url: "avatar image",
+	comment: "hello world"
+}
+```
+
+### Add Comment Request
+
+```
+{
+	post_id: "09809890",
+	screenshot_id: "934343",
+	comment: "hello world"
+}
+```
+
+### Update Comment Request
 
 ```
 {
@@ -315,12 +397,24 @@ Request payload sent to request a friend connection.
 
 ```
 {
-	userId: "target user id",
+	recipient: "recipient username",
 	message: "We met in an alley behind WinCo"
 }
 ```
 
-### Friends Response
+### Friend Details Response
+
+```
+{
+	friendship_id: "29038232",
+	timestamp: 298292022,
+	sender: "sender username",
+	recipient: "recipient username",
+	approved: false
+}
+```
+
+### List Friends Response
 
 Lists user friends.
 
@@ -342,13 +436,14 @@ Lists user friends.
 }
 ```
 
-### Accept Friend Request
+### Update Friend Request
 
-Sent to accept a friend request.
+Sent to accept or reject a friend request.
 
 ```
 {
-  id: "friend request id"
+  id: "friend request id",
+	approved: true
 }
 ```
 
@@ -361,12 +456,15 @@ Sent to accept a friend request.
 }
 ```
 
-### Add Message Response
+### Message Details Response
 
 ```
 {
-	messageId: "1234",
-	timestamp: 13434343
+	message_id: "1234",
+	timestamp: 13434343,
+	sender: "tassock343",
+	recipient: "lonelyranger",
+	message: "Message text"
 }
 ```
 
@@ -374,12 +472,12 @@ Sent to accept a friend request.
 
 ```
 {
-  id: "message id",
+  message_id: "message id",
   message: "Message text"
 }
 ```
 
-### Messages Response
+### List Messages Response
 
 ```
 {
@@ -388,8 +486,7 @@ Sent to accept a friend request.
   limit: 10,
   messages: [
     {
-      id: "message id",
-      username: "tassock343",
+      message_id: "message id",
       timestamp: 232323232,
       sender: "Sender username",
       recipient: "Recipient username",
@@ -423,7 +520,7 @@ Contains the URL of the screenshot uploaded to S3 bucket.
 }
 ```
 
-### Users Response
+### List Users Response
 
 ```
 {
@@ -450,6 +547,105 @@ Contains the URL of the screenshot uploaded to S3 bucket.
 	avatar_url: "image url",
 	bio: "Born to be wild",
 	location: "Salem, OR"
+}
+```
+
+### List Reactions Response
+
+List reactions to post, screenshots in the post, or comments in the post.
+
+```
+{
+	reactions: [
+		{
+			reaction_id: "23343",
+			timestamp: 393038093,
+			username: "foxtrot",
+			post_id: "9343434",
+			post_screenshot_id: "393309",
+			post_comment_id: "29382932",
+			reaction_type: "smile"
+		}
+	]
+}
+```
+
+### Add Reaction Request
+
+Sent to create or update a reaction to a post, screenshot on a post, or a comment on post/screenshot.
+
+```
+{
+	post_id: "9343434",
+	post_screenshot_id: "393309",
+	post_comment_id: "29382932",
+	reaction_type: "smile"
+}
+```
+
+### Reaction Details Response
+
+```
+{
+	reaction_id: 3232090,
+	post_id: "9343434",
+	post_screenshot_id: "393309",
+	post_comment_id: "29382932",
+	timestamp: 902323232,
+	username: "username",
+	reaction_type: "smile"
+}
+```
+
+### Update Reaction Request
+
+```
+{
+	reaction_id: "23343",
+	post_id: "9343434",
+	post_screenshot_id: "393309",
+	post_comment_id: "29382932",
+	reaction_type: "smile"
+}
+```
+
+### List Invites Response
+
+```
+{
+	invites: [
+		{
+			invite_id: "3434343",
+			post_id: "29829829",
+			sender: "sender username",
+			recipient: "recipient username",
+			timestamp: 29020290,
+			message: "Please look at my post!"
+		}
+	]
+}
+```
+
+### Add Invite Request
+
+```
+{
+	post_id: "29829829",
+	recipient: "recipient username",
+	message: "Please look at my post!"
+}
+```
+
+### Invite Details Response
+
+```
+{
+	invite_id: "3434343",
+	post_id: "29829829",
+	sender: "sender username",
+	recipient: "recipient username",
+	timestamp: 29020290,
+	message: "Please look at my post!"
 }
 ```
 
