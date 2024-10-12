@@ -7,9 +7,13 @@ The API is described by `api.yaml` OpenAPI specification at the root of the repo
 * `/health` (singleton)
   * text `healthy`
 * `/account` (singleton)
-  * `POST` `/login`
+  * `POST` `/login` credentials login
     * [Login](#login-request) request
     * [Login](#login-response) response
+  * `POST` `/social` social login
+    * [Social Login](#social-login-request) request
+    * [Login](#login-response) response
+  * `POST` `/anonymous` [Login](#login-response) response
   * `POST` `/logout`
   * `POST` `/signup` [Signup](#signup-request) request
   * `POST` `/validate`
@@ -99,11 +103,13 @@ The API is described by `api.yaml` OpenAPI specification at the root of the repo
 
 ## Data Structures
 
+> CSRF token must be included in request headers with every request.
+
 ### Validate Account Request
 
 Validate the signup form.
 
-```
+```json
 {
 	username: "weevoil",
 	password: "ikoinokai"
@@ -114,7 +120,7 @@ Validate the signup form.
 
 New account validation result.
 
-```
+```json
 {
 	username_result: {
 		valid: true
@@ -137,7 +143,7 @@ New account validation result.
 
 Login with username and password.
 
-```
+```json
 {
 	grant_type: "password",
 	username: "lonelyranger",
@@ -145,11 +151,21 @@ Login with username and password.
 }
 ```
 
+### Social Login Request
+
+```json
+{
+	provider: "facebook",
+	access_token, "testing",
+	access_token_secret: "test"
+}
+```
+
 ### Change Password Request
 
 Change current user password.
 
-```
+```json
 {
 	password: "XWmRawEcKNuKoWyk"
 }
@@ -159,7 +175,7 @@ Change current user password.
 
 Reset password after requesting a reset.
 
-```
+```json
 {
 	password_reset_token: "09809EFFF",
 	new_password: "I5mxYaOJmwGwQKf5"
@@ -170,7 +186,7 @@ Reset password after requesting a reset.
 
 Sends an email to the user with their username and password.
 
-```
+```json
 {
 	email: "lonely_ranger@yahoo.com"
 }
@@ -178,7 +194,7 @@ Sends an email to the user with their username and password.
 
 ### Signup Request
 
-```
+```json
 {
 	username: "kontaktuser",
 	email: "andy@outlook.com",
@@ -188,17 +204,21 @@ Sends an email to the user with their username and password.
 
 ### Login Response
 
-```
+```json
 {
+	id: "cognito identity",
+	access_key_id: "access key",
+	secret_key: "secret key",
 	access_token: "long JWT string",
 	token_type: "Bearer",
-	expires_in: 10000
+	expires_in: 10000,
+	csrf_token: "CSRF string"
 }
 ```
 
 ### Account Details Response
 
-```
+```json
 {
 	id: "30493043",
 	username: "trevor",
@@ -211,7 +231,7 @@ Sends an email to the user with their username and password.
 
 ### Update Account Request
 
-```
+```json
 {
 	avatar_url: "http://screencache/images/123.jpg",
 	bio: "A little about me",
@@ -222,7 +242,7 @@ Sends an email to the user with their username and password.
 
 ### List Posts Response
 
-```
+```json
 {
 	page: 1,
 	limit: 5,
@@ -254,7 +274,7 @@ Sends an email to the user with their username and password.
 
 Response payload returned for post details.
 
-```
+```json
 {
 	post_id: "123",
 	timestamp: 1234444000,
@@ -282,7 +302,7 @@ Response payload returned for post details.
 
 Request payload sent to create or save a post.
 
-```
+```json
 {
 	title: "Post title",
 	description: "Typed in description",
@@ -301,7 +321,7 @@ Request payload sent to create or save a post.
 
 Request payload sent to create or save a post.
 
-```
+```json
 {
 	post_id: "43403930",
 	title: "Post title",
@@ -320,7 +340,7 @@ Request payload sent to create or save a post.
 
 ### Schedule Request
 
-```
+```json
 {
 	type: "spacedRepetition",
 	start: 4343434343
@@ -329,7 +349,7 @@ Request payload sent to create or save a post.
 
 ### Schedule Response
 
-```
+```json
 {
 	timestamp: 90290290290,
 	type: "spacedRepetition",
@@ -357,7 +377,7 @@ comments: [
 
 ### Comment Details Response
 
-```
+```json
 {
 	comment_id: "123",
 	post_id: "09809890",
@@ -372,7 +392,7 @@ comments: [
 
 ### Add Comment Request
 
-```
+```json
 {
 	post_id: "09809890",
 	screenshot_id: "934343",
@@ -382,7 +402,7 @@ comments: [
 
 ### Update Comment Request
 
-```
+```json
 {
 	post_id: "09809890",
 	screenshot_id: "934343",
@@ -395,7 +415,7 @@ comments: [
 
 Request payload sent to request a friend connection.
 
-```
+```json
 {
 	recipient: "recipient username",
 	message: "We met in an alley behind WinCo"
@@ -404,7 +424,7 @@ Request payload sent to request a friend connection.
 
 ### Friend Details Response
 
-```
+```json
 {
 	friendship_id: "29038232",
 	timestamp: 298292022,
@@ -418,7 +438,7 @@ Request payload sent to request a friend connection.
 
 Lists user friends.
 
-```
+```json
 {
   page: 1,
   pages: 5,
@@ -440,7 +460,7 @@ Lists user friends.
 
 Sent to accept or reject a friend request.
 
-```
+```json
 {
   id: "friend request id",
 	approved: true
@@ -449,7 +469,7 @@ Sent to accept or reject a friend request.
 
 ### Add Message Request
 
-```
+```json
 {
   username: "tassock343",
   message: "Message text"
@@ -458,7 +478,7 @@ Sent to accept or reject a friend request.
 
 ### Message Details Response
 
-```
+```json
 {
 	message_id: "1234",
 	timestamp: 13434343,
@@ -470,7 +490,7 @@ Sent to accept or reject a friend request.
 
 ### Update Message Request
 
-```
+```json
 {
   message_id: "message id",
   message: "Message text"
@@ -479,7 +499,7 @@ Sent to accept or reject a friend request.
 
 ### List Messages Response
 
-```
+```json
 {
   page: 1,
   pages: 5,
@@ -501,7 +521,7 @@ Sent to accept or reject a friend request.
 Request payload sent to upload a screenshot.
 Contains the url of the screenshot on user's device.
 
-```
+```json
 {
 	url: "image url",
 	name: "file name",
@@ -514,7 +534,7 @@ Contains the url of the screenshot on user's device.
 Response payload received after a screenshot was uploaded.
 Contains the URL of the screenshot uploaded to S3 bucket.
 
-```
+```json
 {
 	url: "image url"
 }
@@ -522,7 +542,7 @@ Contains the URL of the screenshot uploaded to S3 bucket.
 
 ### List Users Response
 
-```
+```json
 {
 	page: 1,
 	pages: 5,
@@ -541,7 +561,7 @@ Contains the URL of the screenshot uploaded to S3 bucket.
 
 ### User Details Response
 
-```
+```json
 {
 	username: "legacywolf",
 	avatar_url: "image url",
@@ -554,7 +574,7 @@ Contains the URL of the screenshot uploaded to S3 bucket.
 
 List reactions to post, screenshots in the post, or comments in the post.
 
-```
+```json
 {
 	reactions: [
 		{
@@ -574,7 +594,7 @@ List reactions to post, screenshots in the post, or comments in the post.
 
 Sent to create or update a reaction to a post, screenshot on a post, or a comment on post/screenshot.
 
-```
+```json
 {
 	post_id: "9343434",
 	post_screenshot_id: "393309",
@@ -585,7 +605,7 @@ Sent to create or update a reaction to a post, screenshot on a post, or a commen
 
 ### Reaction Details Response
 
-```
+```json
 {
 	reaction_id: 3232090,
 	post_id: "9343434",
@@ -599,7 +619,7 @@ Sent to create or update a reaction to a post, screenshot on a post, or a commen
 
 ### Update Reaction Request
 
-```
+```json
 {
 	reaction_id: "23343",
 	post_id: "9343434",
@@ -611,7 +631,7 @@ Sent to create or update a reaction to a post, screenshot on a post, or a commen
 
 ### List Invites Response
 
-```
+```json
 {
 	invites: [
 		{
@@ -628,7 +648,7 @@ Sent to create or update a reaction to a post, screenshot on a post, or a commen
 
 ### Add Invite Request
 
-```
+```json
 {
 	post_id: "29829829",
 	recipient: "recipient username",
@@ -638,7 +658,7 @@ Sent to create or update a reaction to a post, screenshot on a post, or a commen
 
 ### Invite Details Response
 
-```
+```json
 {
 	invite_id: "3434343",
 	post_id: "29829829",
@@ -653,7 +673,7 @@ Sent to create or update a reaction to a post, screenshot on a post, or a commen
 
 Response sent for 4xx and 5xx errors.
 
-```
+```json
 {
 	error: "error code",
 	error_description: "error description"
