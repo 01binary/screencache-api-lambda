@@ -7,10 +7,10 @@ The API is described by `api.yaml` OpenAPI specification at the root of the repo
 * `/health` (singleton)
   * text `healthy`
 * `/account` (singleton)
-  * `POST` `/login` credentials login
+  * `POST` `/login` login with credentials
     * [Login](#login-request) request
     * [Login](#login-response) response
-  * `POST` `/social` social login
+  * `POST` `/social` login with social provider
     * [Social Login](#social-login-request) request
     * [Login](#login-response) response
   * `POST` `/anonymous` [Login](#login-response) response
@@ -103,7 +103,7 @@ The API is described by `api.yaml` OpenAPI specification at the root of the repo
 
 ## Data Structures
 
-> CSRF token must be included in request headers with every request.
+> CSRF token must be included in request headers with every request. This is received from `/login`, `/social`, or `/anonymous` endpoints.
 
 ### Validate Account Request
 
